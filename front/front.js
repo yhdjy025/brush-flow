@@ -12,24 +12,32 @@ $(function () {
         changeBrowser();
         //取时间间隔
         time = data.time ? data.time : time;
+        var timeFlag = new Date().getTime();
         if (data.select && data.select == 1) {
             setTimeout(function () {
                 //页面向下随机滚动
                 window.scrollTo(0, randomNum(1000));
-                //取网页里的所有链接
-                var links = $('#J_dh_body').find('a');
-                //从其中随机选一个链接打开
-                var clickDom = randomArr(links);
-                clickDom.click();
-                //5秒钟后
-                setTimeout(function () {
-                    //关闭打开的链接
-                    closeActiveTab();
-                    //清理浏览器缓存
-                    clearCache();
-                    //刷新页面
+                while(true) {
+                    var links = $('#J_dh_body').find('a');
+                    if (links.length > 0) {
+                        //从其中随机选一个链接打开
+                        var clickDom = randomArr(links);
+                        clickDom.click();
+                        break;
+                    }
+                }
+
+                while(true) {
+                    if (timeFlag < (new Date().getTime() - 10 * 1000)) {
+                        //关闭打开的链接
+                        closeActiveTab();
+                        break;
+                    }
+                }
+                //清理浏览器缓存
+                clearCache(function () {
                     window.location.reload();
-                }, time * 1000 - 5000);
+                });
             }, 5000);
         }
     });
@@ -64,7 +72,7 @@ function changeScreen() {
 }
 
 //清理缓存
-function clearCache() {
+function clearCache( callback) {
     chrome.runtime.sendMessage({
         msg: 'clearCache',
         data: {
@@ -83,6 +91,7 @@ function clearCache() {
         days: 365
     }, function (response) {
         console.log('清理缓存');
+        callback();
     });
 }
 
