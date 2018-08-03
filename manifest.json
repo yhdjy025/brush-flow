@@ -23,7 +23,6 @@
       "matches": ["http://hao.7654.com/*"],
       "js": [
         "library/js/jquery.min.js",
-        "library/js/layer.js",
         "front/helper.js",
         "front/front.js"
       ],
