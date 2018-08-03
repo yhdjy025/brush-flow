@@ -28,7 +28,7 @@
         "front/front.js"
       ],
       "all_frames": true,
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ],
   "browser_action": {
