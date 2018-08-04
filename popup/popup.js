@@ -6,6 +6,7 @@
 if (typeof chrome == 'undefined') {
     var chrome = browser;
 }
+var getip_url = 'https://survey.yhdjy.cn/admin/getip';
 
 chrome.storage.local.get('open_flow', function (data) {
     if (data.open_flow) {
@@ -15,6 +16,16 @@ chrome.storage.local.get('open_flow', function (data) {
         }
     }
 });
+
+chrome.storage.local.get('ip_list', function (data) {
+    if (data.ip_list) {
+        if (data.ip_list.count) {
+            $('#count-ip').text(data.ip_list.count);
+        }
+    }
+});
+
+$('#show-ip').load(getip_url);
 
 $(function () {
 

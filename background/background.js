@@ -6,48 +6,34 @@
 // Copyright (c) 2010 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-chrome.proxy.settings.clear({scope: 'regular'})
+chrome.proxy.settings.clear({scope: 'regular'});
 
-var interval1 = setInterval(function () {
-    chrome.tabs.query({}, function (tabs) {
-        var mainTab = null;
-        var otherTab = []
-        for (let tab of tabs) {
-            if (tab.url.indexOf('hao.7654.com') == -1) {
-                otherTab.push(tab.id);
-            } else {
-                mainTab = tab.id;
-            }
-        }
-        if (mainTab != null) {
-            chrome.tabs.remove(otherTab);
-            changeIp(function () {
-                chrome.tabs.executeScript(mainTab, {code: 'window.location.reload()'});
-            });
-        }
-    })
-}, 20000);
-
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.msg == 'closeActiveTab') {
-        changeIp()
-        setTimeout(function () {
-            chrome.tabs.query({}, function (tabs) {
-                /*var mainTab;
-                for (let tab of tabs) {
-                    if (tab.url.indexOf('hao.7654.com') == -1) {
-                        chrome.tabs.remove(tab.id);
-                    } else {
-                        mainTab = tab.id;
-                    }
-                }
-                clearCache(function () {
-                    chrome.tabs.reload(mainTab)
-                })*/
-            })
-        }, request.timeOut);
+var times = 30;
+chrome.storage.local.get('open_flow', function (data) {
+    if (data.open_flow && data.open_flow.time) {
+        times = data.open_flow.time;
     }
-    sendResponse({farewell: true});		//返回信息
+    var interval1 = setInterval(function () {
+        chrome.tabs.query({}, function (tabs) {
+            var mainTab = null;
+            var otherTab = [];
+            for (let tab of tabs) {
+                if (tab.url.indexOf('hao.7654.com') == -1) {
+                    otherTab.push(tab.id);
+                } else {
+                    mainTab = tab.id;
+                }
+            }
+            if (mainTab != null) {
+                chrome.tabs.remove(otherTab);
+                changeIp(function () {
+                    clearCache(function () {
+                        chrome.tabs.executeScript(mainTab, {code: 'window.location.reload()'});
+                    })
+                });
+            }
+        })
+    }, times * 1000);
 });
 
 
@@ -95,15 +81,16 @@ function getIp(callback) {
                     }
                 }
                 var save = result;
-                if (data.ip_list) {
-                    var ip = data.ip_list[0];
+                if (data.ip_list && data.ip_list.ips) {
+                    var ip = data.ip_list.ips[0];
                     if (result.indexOf(ip) != -1) {
-                        save = data.ip_list;
+                        save = data.ip_list.ips;
                     }
                 }
-                console.log(save)
+                console.log(data.ip_list)
                 var use = save.pop();
-                chrome.storage.local.set({ip_list: save});
+                var count = data.ip_list.count ? data.ip_list.count++ : 1;
+                chrome.storage.local.set({ip_list: {ips: save, count: count}});
                 callback(use)
             }
         }
