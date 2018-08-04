@@ -8,33 +8,49 @@
 // found in the LICENSE file.
 
 
-/*
-chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.sync.set({ color: '#3aa757' }, function() {
-        console.log('The color is green.');
-    });
-});*/
-
-
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-
-    if (request.msg == 'clearCache') {		//如果是清理命令
-        var days = request.days;
-        console.log(request)
-        toclean(days, request.data);	//则调用执行清除方法
-    }
     if (request.msg == 'closeActiveTab') {
-        chrome.tabs.query({active: true}, function (tab) {
-            console.log(tab[0].id)
-            chrome.tabs.remove(tab[0].id);
-        })
+        setTimeout(function () {
+            chrome.tabs.query({}, function (tabs) {
+                var mainTab;
+                for (let tab of tabs) {
+                    if (tab.url.indexOf('hao.7654.com') == -1) {
+                        chrome.tabs.remove(tab.id);
+                    } else {
+                        mainTab = tab.id;
+                    }
+                }
+                clearCache(function () {
+                    chrome.tabs.reload(mainTab)
+                })
+            })
+        }, request.timeOut);
     }
     sendResponse({farewell: true});		//返回信息
 });
 
-function toclean(days,data) {
+
+//清理缓存
+function clearCache(callback) {
+    var data = {
+        "appcache": true,
+        "cache": true,
+        "cookies": true,
+        "downloads": true,
+        "fileSystems": true,
+        "formData": true,
+        "history": true,
+        "indexedDB": true,
+        "localStorage": true,
+        "serverBoundCertificates": true,
+        "webSQL": true
+    };
+    var days = 365;
     var millisecondsPerWeek = 1000 * 60 * 60 * 24 * days;
     var ago = (new Date()).getTime() - millisecondsPerWeek;
     chrome.browsingData.remove({since: ago}, data, function () {
+        if (typeof callback == 'function') {
+            callback();
+        }
     });
 }

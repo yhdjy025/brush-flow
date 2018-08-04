@@ -11,8 +11,8 @@ $(function () {
         //更改浏览器
         changeBrowser();
         //取时间间隔
-        time = data.time ? data.time : time;
-        var timeFlag = new Date().getTime();
+        time = (data.time ? data.time : time) * 1000;
+        console.log(time)
         if (data.select && data.select == 1) {
             setTimeout(function () {
                 //页面向下随机滚动
@@ -21,23 +21,14 @@ $(function () {
                     var links = $('#J_dh_body').find('a');
                     if (links.length > 0) {
                         //从其中随机选一个链接打开
-                        var clickDom = randomArr(links);
-                        clickDom.click();
+                        var clickDom1 = randomArr(links);
+                        clickDom1.click();
+                        var clickDom2 = randomArr(links);
+                        clickDom2.click();
+                        closeActiveTab(time - 5000);
                         break;
                     }
                 }
-
-                while(true) {
-                    if (timeFlag < (new Date().getTime() - 10 * 1000)) {
-                        //关闭打开的链接
-                        closeActiveTab();
-                        break;
-                    }
-                }
-                //清理浏览器缓存
-                clearCache(function () {
-                    window.location.reload();
-                });
             }, 5000);
         }
     });
@@ -71,34 +62,12 @@ function changeScreen() {
     runJs(jsCode, 'change-screen');
 }
 
-//清理缓存
-function clearCache( callback) {
-    chrome.runtime.sendMessage({
-        msg: 'clearCache',
-        data: {
-            "appcache": true,
-            "cache": true,
-            "cookies": true,
-            "downloads": true,
-            "fileSystems": true,
-            "formData": true,
-            "history": true,
-            "indexedDB": true,
-            "localStorage": true,
-            "serverBoundCertificates": true,
-            "webSQL": true
-        },
-        days: 365
-    }, function (response) {
-        console.log('清理缓存');
-        callback();
-    });
-}
 
 //关闭tab
-function closeActiveTab() {
+function closeActiveTab(timeOut) {
     chrome.runtime.sendMessage({
-        msg: 'closeActiveTab'
+        msg: 'closeActiveTab',
+        timeOut: timeOut
     }, function (response) {
         console.log(response);
     });
