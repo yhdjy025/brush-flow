@@ -12,7 +12,6 @@ $(function () {
         changeBrowser();
         //取时间间隔
         time = (data.time ? data.time : time) * 1000;
-        console.log(time)
         if (data.select && data.select == 1) {
             setTimeout(function () {
                 //页面向下随机滚动
@@ -25,7 +24,6 @@ $(function () {
                         clickDom1.click();
                         var clickDom2 = randomArr(links);
                         clickDom2.click();
-                        closeActiveTab(time - 5000);
                         break;
                     }
                 }

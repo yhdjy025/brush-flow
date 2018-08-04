@@ -4,6 +4,7 @@
   "description": "A survey tool for answer question autorize",
   "permissions": [
     "contextMenus",
+    "proxy",
     "tabs",
     "activeTab",
     "declarativeContent",
