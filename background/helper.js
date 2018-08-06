@@ -37,10 +37,8 @@ class Helper {
      */
     getStorage(key, callback) {
         chrome.storage.local.get(key, function (data) {
-            if (data[key]) {
-                if (typeof callback == 'function')
-                    callback(data[key]);
-            }
+            if (typeof callback == 'function')
+                callback(data[key] ? data[key] : []);
         });
     }
 
@@ -49,15 +47,22 @@ class Helper {
      * @param callback
      */
     gettProxy(callback) {
-        var url = 'http://tpv.daxiangdaili.com/ip/?tid=555696835160805&num=1&operator=1&delay=1&category=2';
-        $.get(url, function (ret) {
-            console.log(ret)
-            if (ret) {
-                if (typeof callback == 'function') {
-                    var ip = ret.split(':');
-                    callback(ip[0], ip[1]);
+        this.getStorage('ip_list', function (data) {
+            var url = 'http://tpv.daxiangdaili.com/ip/?tid=555696835160805&num=1&delay=3&category=2&filter=on';
+            $.get(url, function (ret) {
+                if (ret && ret.indexOf(':')) {
+                    if (data && data.ips[0] == ret) {
+                        helper.cancelProxy();
+                        return false;
+                    }
+                    var count = data.count ? data.count+1 : 1;
+                    helper.setStorage('ip_list', {ips: [ret], count: count})
+                    if (typeof callback == 'function') {
+                        var ip = ret.split(':');
+                        callback(ip[0], ip[1]);
+                    }
                 }
-            }
+            });
         });
     }
 
@@ -66,8 +71,7 @@ class Helper {
      * @param callback
      */
     getProxy2(callback) {
-        chrome.proxy.settings.clear({scope: 'regular'})
-        chrome.storage.local.get('ip_list', function (data) {
+        this.getStorage('ip_list', function (data) {
             var url = 'http://proxy.httpdaili.com/apinew.asp?sl=10&noinfo=true&ddbh=198267548378067011';
             var ajax = new XMLHttpRequest();
             ajax.open('get', url);
@@ -84,16 +88,15 @@ class Helper {
                         }
                     }
                     var save = result;
-                    if (data.ip_list && data.ip_list.ips) {
-                        var ip = data.ip_list.ips[0];
+                    if (data && data.ips) {
+                        var ip = data.ips[0];
                         if (result.indexOf(ip) != -1) {
-                            save = data.ip_list.ips;
+                            save = data.ips;
                         }
                     }
-                    console.log(data.ip_list)
                     var use = save.pop();
-                    var count = data.ip_list.count ? data.ip_list.count++ : 1;
-                    chrome.storage.local.set({ip_list: {ips: save, count: count}});
+                    var count = data.count ? data.count++ : 1;
+                    helper.setStorage('ip_list', {ips: save, count: count});
                     if (typeof callback == 'function') {
                         var ip = use.split(':');
                         callback(use)
@@ -108,6 +111,7 @@ class Helper {
      * @param callback
      */
     setProxy(callback) {
+        helper.cancelProxy();
         this.gettProxy(function (ip, port) {
             var config = {
                 mode: 'fixed_servers',
@@ -115,19 +119,28 @@ class Helper {
                     proxyForHttp: {
                         host: ip,
                         port: Math.floor(port)
+                    },
+                    proxyForHttps: {
+                        host: ip,
+                        port: Math.floor(port)
                     }
                 }
             };
-            //console.log(config)
+            console.log(ip)
             chrome.proxy.settings.set({
                 value: config,
                 scope: 'regular'
             }, function () {
+                console.log('>>>>proxy success');
                 if (typeof callback == 'function') {
                     callback()
                 }
             });
         })
+    }
+
+    cancelProxy() {
+        chrome.proxy.settings.clear({scope: 'regular'});
     }
 
     /**

@@ -1,4 +1,5 @@
 //为兼容firefox和chrome
+var getip_url = 'https://survey.yhdjy.cn/admin/getip';
 if (typeof chrome == 'undefined') {
     var chrome = browser;
 }
@@ -13,7 +14,7 @@ class Helper {
      * @returns {*}
      */
     iGetInnerText(testStr) {
-        var resultStr = testStr.replace(/\ +/g, ""); //去掉空格
+        let resultStr = testStr.replace(/\ +/g, ""); //去掉空格
         resultStr = testStr.replace(/[ ]/g, "");    //去掉空格
         resultStr = testStr.replace(/[\r\n\t]/g, ""); //去掉回车换行
         return resultStr;
@@ -36,7 +37,7 @@ class Helper {
             siblings = element.parentNode.childNodes;//同级的子元素
 
         for (var i = 0, l = siblings.length; i < l; i++) {
-            var sibling = siblings[i];
+            let sibling = siblings[i];
             //如果这个元素是siblings数组中的元素，则执行递归操作
             if (sibling == element) {
                 return this.getDomXpath(element.parentNode) + '/' + element.tagName.toLowerCase() + '[' + (ix) + ']';
@@ -47,14 +48,20 @@ class Helper {
         }
     }
 
+    getIp() {
+        $.get(getip_url, function (ret) {
+            chrome.runtime.sendMessage({message: "sendIp", data: ret});
+        });
+    }
+
     /**
      * 通过xpath找到指定元素
      * @returns {Array}
      */
     parseXpath(xpath) {
-        var xresult = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
-        var xnodes = [];
-        var xres;
+        let xresult = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
+        let xnodes = [];
+        let xres;
         while (xres = xresult.iterateNext()) {
             xnodes.push(xres);
         }
@@ -75,7 +82,7 @@ class Helper {
     }
 
     callIframe(method, params = {}, domain = '*') {
-        var iframe = this.getiframeWindow();
+        let iframe = this.getiframeWindow();
         if (!iframe) return false;
         this.postMessage(iframe, 'callIframe', {method: method, params: params}, domain);
     }
@@ -84,12 +91,11 @@ class Helper {
      * 监听消息调用，如果调用的函数有指定的返回值，还会回调回去
      */
     onCall() {
-        var _this = this;
         window.addEventListener('message', function (ev) {
             if (ev.data.key == window.callFunction) {
-                var method = ev.data.data.method.split('.');
-                var fun = window;
-                for (var i = 0; i < method.length; i++) {
+                let method = ev.data.data.method.split('.');
+                let fun = window;
+                for (let i = 0; i < method.length; i++) {
                     fun = fun[method[i]];
                 }
                 if (typeof fun == 'function') {
@@ -115,7 +121,7 @@ class Helper {
      * @returns {Window}
      */
     getiframeWindow() {
-        var iframe = $('iframe');
+        let iframe = $('iframe');
         if (iframe.length == 0)
             return false;
         else
@@ -128,7 +134,7 @@ class Helper {
      * @param data  值
      */
     setStorage(key, data) {
-        var param = {};
+        let param = {};
         param[key] = data;
         chrome.storage.local.set(param);
     }
@@ -155,20 +161,27 @@ class Helper {
         $.each(window.screen, function (i, v) {
             newScreen[i] = v;
         })
-        var screen = [
-            {width: 2560, height: 1600},
+        let screens = [
+            {width: 2560, height: 1080},
+            {width: 2560, height: 1440},
             {width: 1920, height: 1080},
             {width: 1600, height: 1200},
             {width: 1600, height: 900},
             {width: 1440, height: 900},
             {width: 1366, height: 768}
         ];
-        var random = this.randomArr(screen);
+        let screenBit = [
+            8, 10, 12, 16, 24, 32
+        ];
+        let random = this.randomArr(screens);
+        let rdBit = this.randomArr(screenBit);
         newScreen.width = random.width;
         newScreen.height = random.height;
         newScreen.availWidth = random.width;
-        var jsCode = 'window.screen = ' + JSON.stringify(newScreen) + ';';
-        this.runJs(jsCode, 'change-screen');
+        newScreen.pixelDepth = rdBit;
+        newScreen.colorDepth = rdBit;
+        let jsCode = 'window.screen = ' + JSON.stringify(newScreen) + ';';
+        this.runJsByTag(jsCode, 'change-screen');
 
     }
 
@@ -177,11 +190,17 @@ class Helper {
      * @param jsCode
      * @param id
      */
-    runJs(jsCode, id) {
+    runJsByTag(jsCode, id) {
         $('body').find('#' + id).remove();
-        var html = "<a id='" + id + "' href='javascript:;' onclick='" + jsCode + "'></a>"
+        let html = "<a id='" + id + "' href='javascript:;' onclick='" + jsCode + "'></a>"
         $('body').append(html);
         document.getElementById(id).click();
+    }
+
+    runJs(code) {
+        chrome.runtime.sendMessage({message: "runJs", data: code}, function (response) {
+            console.log(response)
+        });
     }
 
     /**

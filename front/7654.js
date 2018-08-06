@@ -1,6 +1,7 @@
 var interval = null;
 $(function () {
     helper.getStorage('open_flow', function (data) {
+        console.log('------------7654------------');
         //更改分辨率
         helper.setScreen();
         //更改系统类型

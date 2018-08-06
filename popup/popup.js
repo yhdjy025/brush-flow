@@ -6,7 +6,7 @@
 if (typeof chrome == 'undefined') {
     var chrome = browser;
 }
-var getip_url = 'https://survey.yhdjy.cn/admin/getip';
+
 $(function () {
     //初始化选项
     chrome.storage.local.get('open_flow', function (data) {
@@ -35,8 +35,25 @@ $(function () {
             })
         }
     });
-    //代理ip
-    $('#show-ip').load(getip_url);
+
+    //初始化代理IP
+    chrome.tabs.query({active: true}, function (tab) {
+       runJs(tab.id, 'helper.getIp()');
+    });
+
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+        //接收IP
+        if (request.message == 'sendIp') {
+            $('#show-ip').text(request.data);
+        }
+        //运行js
+        if (request.message == 'runJs') {
+            runJs(sender.tab.id, request.data, function (ret) {
+                sendResponse(ret);
+            });
+        }
+    });
+
     //修改数据
     $('#open-flow,#time-interval,input[name=type]').on('change', function () {
         var time = $('#time-interval').val();
@@ -49,4 +66,15 @@ $(function () {
         chrome.storage.local.set({open_flow: status});
     });
 })
+
+//Y运行js
+function runJs(tabId, code, callback) {
+    chrome.tabs.executeScript(tabId, {
+        code: code
+    }, function (result) {
+        if (typeof callback == 'function') {
+            callback(result)
+        }
+    })
+}
 
