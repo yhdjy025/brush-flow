@@ -1,7 +1,3 @@
-var select_survey = 'https://survey.yhdjy.cn/chrome/selectSurvey';
-var find_question = 'https://survey.yhdjy.cn/chrome/findQuestion';
-var add_question = 'https://survey.yhdjy.cn/chrome/addQuestion';
-var getInfo_url = 'https://survey.yhdjy.cn/chrome/getInfo';
 //为兼容firefox和chrome
 if (typeof chrome == 'undefined') {
     var chrome = browser;
@@ -21,35 +17,6 @@ class Helper {
         resultStr = testStr.replace(/[ ]/g, "");    //去掉空格
         resultStr = testStr.replace(/[\r\n\t]/g, ""); //去掉回车换行
         return resultStr;
-    }
-
-    /**
-     * 打开选择坐标
-     */
-    openSelector() {
-        window.isOpenSelector = 1;
-        var px_line = '<p id="px_line" style="width:100%;top: 0;z-index:999999;left: 0;height:1px;position:fixed;background:red;"></p>';
-        var py_line = '<p id="py_line" style="height:100%;top: 0;z-index:999999;left: 0;width:1px;position:fixed;background:red;"></p>';
-        $('body').append(px_line)
-        $('body').append(py_line);
-        $(document).on('mousemove', function (e) {
-            if (window.isOpenSelector = 1) {
-                var e = e || event;
-                var x = e.clientX;
-                var y = e.clientY;
-                $('#px_line').css('top', (y + 2) + 'px');
-                $('#py_line').css('left', (x - 2) + 'px');
-            }
-        });
-    }
-
-    /**
-     * 关闭选择坐标
-     */
-    closeSelector() {
-        window.isOpenSelector = 0;
-        $('body').find('#px_line').remove();
-        $('body').find('#py_line').remove();
     }
 
     /**
@@ -181,99 +148,60 @@ class Helper {
     }
 
     /**
-     * 关闭所有弹窗
+     * 更改分辨率
      */
-    closeLayer() {
-        layer.closeAll();
-        window.isOpen = 0;
+    setScreen() {
+        var newScreen = {};
+        $.each(window.screen, function (i, v) {
+            newScreen[i] = v;
+        })
+        var screen = [
+            {width: 2560, height: 1600},
+            {width: 1920, height: 1080},
+            {width: 1600, height: 1200},
+            {width: 1600, height: 900},
+            {width: 1440, height: 900},
+            {width: 1366, height: 768}
+        ];
+        var random = this.randomArr(screen);
+        newScreen.width = random.width;
+        newScreen.height = random.height;
+        newScreen.availWidth = random.width;
+        var jsCode = 'window.screen = ' + JSON.stringify(newScreen) + ';';
+        this.runJs(jsCode, 'change-screen');
+
     }
 
     /**
-     * 打印消息
-     * @param msg
-     * @param type
-     * @param callback
-     * @param time
+     * 运行js
+     * @param jsCode
+     * @param id
      */
-    layerMsg(msg, type = 0, callback = null, time = 300) {
-        if (1 == type) {
-            layer.msg(msg, {icon: 6, shade: 0.2, time: time}, function () {
-                if (typeof callback == 'function')
-                    callback();
-            })
-        } else {
-            layer.msg(msg, {icon: 5, shade: 0.2, time: 1500}, function () {
-                if (typeof callback == 'function')
-                    callback();
-            })
-        }
+    runJs(jsCode, id) {
+        $('body').find('#' + id).remove();
+        var html = "<a id='" + id + "' href='javascript:;' onclick='" + jsCode + "'></a>"
+        $('body').append(html);
+        document.getElementById(id).click();
     }
 
     /**
-     * 获取身份
-     * @param country
-     * @param callback
+     * 随机取数组
+     * @param arr
+     * @returns {*}
      */
-    getInfo(country, callback) {
-        var info = {};
-        var url = getInfo_url + '/' + country;
-        $.get(url, function (ret) {
-            var list = $(ret).find('.row.no-margin.no-padding.content')
-            $.each(list, function (index, el) {
-                var input = $(el).find('input');
-                switch (index) {
-                    case 0:
-                        info.name = $(input).eq(0).val();
-                        info.sex = $(input).eq(1).val();
-                        break;
-                    case 1:
-                        info.firstName = $(input).eq(0).val();
-                        info.lastName = $(input).eq(1).val();
-                        break;
-                    case 3:
-                        info.birthday = $(input).eq(0).val();
-                        info.state = $(input).eq(1).val();
-                        break;
-                    case 4:
-                        info.strsst = $(input).eq(0).val();
-                        break;
-                    case 5:
-                        info.city = $(input).eq(0).val();
-                        info.phone = $(input).eq(1).val();
-                        break;
-                    case 6:
-                        info.zip = $(input).eq(0).val();
-                        info.fullState = $(input).eq(1).val();
-                        break;
-                        ;
-                    case 8:
-                        info.ssn = $(input).eq(0).val();
-                        info.password = $(input).eq(1).val();
-                        break;
-                        ;
-                    case 9:
-                        info.cardType = $(input).eq(0).val();
-                        info.card = $(input).eq(1).val();
-                        break;
-                    case 10:
-                        info.cvv2 = $(input).eq(0).val();
-                        info.date = $(input).eq(1).val();
-                        break;
-                    default:
-                        // statements_def
-                        break;
-                }
-            });
-            if (typeof callback == 'function') {
-                callback(info)
-            }
-        });
+    randomArr(arr) {
+        return arr[this.random(0, arr.length)];
     }
 
-    getSimlar(obj) {
-
+    /**
+     * 随机数
+     * @param min
+     * @param max
+     * @returns {number}
+     */
+    random(min, max) {
+        return Math.round(min + Math.random() * max);
     }
 }
 
 var helper = new Helper();
-helper.onCall();

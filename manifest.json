@@ -9,23 +9,43 @@
     "activeTab",
     "declarativeContent",
     "storage",
-    "http://*/*",
+    "webRequest",
     "browsingData",
+    "webRequestBlocking",
+    "downloads",
+    "http://*/*",
     "https://*/*"
   ],
   "background": {
     "scripts": [
+      "library/js/jquery.min.js",
+      "background/helper.js",
       "background/background.js"
     ],
-    "persistent": false
+    "persistent": true
   },
   "content_scripts": [
     {
-      "matches": ["http://hao.7654.com/*"],
+      "matches": ["<all_urls>"],
       "js": [
         "library/js/jquery.min.js",
-        "front/helper.js",
-        "front/front.js"
+        "front/helper.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["*://hao.7654.com/*"],
+      "js": [
+        "front/7654.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["*://pc.qq.com/detail/*"],
+      "js": [
+        "front/qqsoft.js"
       ],
       "all_frames": true,
       "run_at": "document_end"
