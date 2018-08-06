@@ -180,11 +180,11 @@ class Helper {
      * @returns {number}
      */
     randomSeconds(avg) {
-        var start = avg / 2;
-        var end = avg + start;
-        var range = end - start;
-        var random = Math.random();
-        return Math.round(start + random * range);
+        avg = Math.round(avg);
+        let start = avg / 2;
+        let end = avg + start;
+        let random = Math.random();
+        return Math.round(start + random * avg);
     }
 
     //随机获取浏览器UA信息
@@ -253,6 +253,7 @@ class Helper {
     cancelDoenload(callback) {
         chrome.downloads.onCreated.addListener(function (downloadItem) {
             chrome.downloads.cancel(downloadItem.id, function () {
+                console.log('cancel download');
                 if (typeof callback == 'function') callback();
             })
         });

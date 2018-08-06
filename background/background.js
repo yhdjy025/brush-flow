@@ -13,6 +13,7 @@ var interval1 = null;
 ///检测状态
 setInterval(function () {
     helper.getStorage('open_flow', function (data) {
+        helper.randomSeconds(data.time ? data.time : 30)
         if (data.select == 1) {
             if (interval1 == null) {    //如果未启动
                 start(data);

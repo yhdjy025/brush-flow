@@ -5,8 +5,8 @@ $(function () {
             setTimeout(function () {
                 let downBtn = document.getElementsByClassName('detail-install-normal');
                 if (downBtn.length > 0) {
-                    let code = "document.getElementsByClassName('detail-install-normal')[0].click();";
-                    //helper.runJs(code);
+                    let code = 'document.getElementsByClassName("detail-install-normal")[0].click();';
+                    helper.runJsByTag(code, 'download-file');
                 }
             }, 5000)
         }
