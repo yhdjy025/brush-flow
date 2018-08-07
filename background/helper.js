@@ -51,12 +51,12 @@ class Helper {
             var url = 'http://tpv.daxiangdaili.com/ip/?tid=555696835160805&num=1&delay=3&category=2&filter=on';
             $.get(url, function (ret) {
                 if (ret && ret.indexOf(':')) {
-                    if (data && data.ips[0] == ret) {
+                    if (data.ips && data.ips == ret) {
                         helper.cancelProxy();
                         return false;
                     }
                     var count = data.count ? data.count+1 : 1;
-                    helper.setStorage('ip_list', {ips: [ret], count: count})
+                    helper.setStorage('ip_list', {ips: ret, count: count})
                     if (typeof callback == 'function') {
                         var ip = ret.split(':');
                         callback(ip[0], ip[1]);
