@@ -59,14 +59,14 @@ function spider(data) {
         var mainTab = null;
         for (let tab of tabs) {
             tabsId.push(tab.id);
-            if (data.type == '2345') {
+            if (data.type == '7654') {
                 if (tab.url.indexOf('hao.7654.com') != -1) {
-                    mainTab = tab.id;
+                    mainTab = tab;
                 }
             }
-            if (data.type == '7654') {
-                if (tab.url.indexOf('2345.com') != -1) {
-                    mainTab = tab.id;
+            if (data.type == '2345') {
+                if (tab.url.indexOf('www.2345.com') != -1) {
+                    mainTab = tab;
                 }
             }
             if (data.type == 'qqsoft') {
@@ -75,6 +75,7 @@ function spider(data) {
                 }
             }
         }
+        console.log(mainTab)
         if (mainTab != null) {
             helper.setProxy(function () {
                 helper.clearCache(function () {
