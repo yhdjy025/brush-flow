@@ -1,4 +1,5 @@
 //为兼容firefox和chrome
+var getproxy_url = 'https://survey.yhdjy.cn/admin/getproxy';
 if (typeof chrome == 'undefined') {
     var chrome = browser;
 }
@@ -48,7 +49,7 @@ class Helper {
      */
     gettProxy(callback) {
         this.getStorage('ip_list', function (data) {
-            var url = 'http://tpv.daxiangdaili.com/ip/?tid=555696835160805&num=1&delay=3&category=2&filter=on';
+            var url = getproxy_url;
             $.get(url, function (ret) {
                 if (ret && ret.indexOf(':')) {
                     if (data.ips && data.ips == ret) {
