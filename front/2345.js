@@ -11,7 +11,7 @@ $(function () {
                     var links = $('#content').find('a');
                     if (links.length > 0) {
                         console.log(links)
-                        //从其中随机选一个链接打开
+                        //从其中随机选一个链接打开(因为导航要求是打开以后 还要又持续点击才算数)
                         var clickDom1 = helper.randomArr(links);
                         clickDom1.click();
                         var clickDom2 = helper.randomArr(links);
