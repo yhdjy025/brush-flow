@@ -56,7 +56,7 @@ function changeBrowser() {
     ];
     var randomBroswer = helper.randomArr(browser);
     var jsCode = 'GLOBAL.Util.getBrowserType = function(){return "' + randomBroswer + '"};';
-    helper.runJsByTag((jsCode, 'change-broswer');
+    helper.runJsByTag(jsCode, 'change-broswer');
 }
 
 

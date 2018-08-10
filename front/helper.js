@@ -155,6 +155,8 @@ class Helper {
 
     /**
      * 更改分辨率
+     * 原理，在页面的js加载之前 先把windows.screen里的屏幕信息修改了，
+     * 这样登网页的js加载后获取到的信息 就是你改了以后的
      */
     setScreen() {
         var newScreen = {};
@@ -189,6 +191,7 @@ class Helper {
      * 运行js
      * @param jsCode
      * @param id
+     * 因为 插件js是不能直接调用网页的js的 所以这里通过页面插入一个元素 点后用点击时间取运行网页的js
      */
     runJsByTag(jsCode, id) {
         $('body').find('#' + id).remove();
@@ -197,6 +200,10 @@ class Helper {
         document.getElementById(id).click();
     }
 
+    /**
+     * 这个是用prop页面取调用js 但调用到的不是网页的js而是插件的js
+     * @param code
+     */
     runJs(code) {
         chrome.runtime.sendMessage({message: "runJs", data: code}, function (response) {
             console.log(response)
@@ -204,7 +211,7 @@ class Helper {
     }
 
     /**
-     * 随机取数组
+     * 随机取数组匀速
      * @param arr
      * @returns {*}
      */
