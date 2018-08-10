@@ -39,7 +39,7 @@ function changeOsType() {
     ];
     var randomOs = helper.randomArr(os);
     var jsCode = 'GLOBAL.Util.getOsType = function(){return "' + randomOs + '"};';
-    runJs(jsCode, 'change-os');
+    helper.runJsByTag(jsCode, 'change-os');
 }
 
 function changeBrowser() {
@@ -56,7 +56,7 @@ function changeBrowser() {
     ];
     var randomBroswer = helper.randomArr(browser);
     var jsCode = 'GLOBAL.Util.getBrowserType = function(){return "' + randomBroswer + '"};';
-    runJs(jsCode, 'change-broswer');
+    helper.runJsByTag((jsCode, 'change-broswer');
 }
 
 
