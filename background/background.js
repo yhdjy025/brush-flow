@@ -64,7 +64,7 @@ function spider(data) {
             tabsId.push(tab.id);
             //找出哪个刷流量的网站的标签
             if (data.type == '7654') {
-                if (tab.url.indexOf('hao.7654.com') != -1) {
+                if (tab.url.indexOf('hao.7654.com/?chno') != -1) {
                     mainTab = tab;
                 }
             }

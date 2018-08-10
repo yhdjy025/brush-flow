@@ -250,7 +250,7 @@ class Helper {
     }
 
     /**
-     * 曲子奥下载
+     * 取消下载
      * @param callback
      */
     cancelDoenload(callback) {
