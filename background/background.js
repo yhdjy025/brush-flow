@@ -9,7 +9,7 @@
 helper.cancelProxy();
 
 var interval1 = null;
-
+helper.setUa();
 ///检测状态
 setInterval(function () {
     helper.getStorage('open_flow', function (data) {

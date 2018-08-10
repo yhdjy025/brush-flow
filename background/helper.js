@@ -231,6 +231,8 @@ class Helper {
                         break;
                     }
                 }
+                console.log(details.requestHeaders)
+                return {requestHeaders: details.requestHeaders};
             },
             {urls: ['<all_urls>']},
             ['blocking', 'requestHeaders']
