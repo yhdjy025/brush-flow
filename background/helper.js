@@ -72,7 +72,7 @@ class Helper {
      * 获取代理IP   接口2
      * @param callback
      */
-    gettProxy(callback) {
+    gettProxy2(callback) {
         this.getStorage('ip_list', function (data) {
             var url = getproxy2_url;
             $.get(url, function (ret) {
