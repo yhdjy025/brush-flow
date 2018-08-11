@@ -69,7 +69,7 @@ function spider(data) {
                 }
             }
             if (data.type == '2345') {
-                if (tab.url.indexOf('www.2345.com') != -1) {
+                if (tab.url.indexOf('www.2345.com/?') != -1) {
                     mainTab = tab;
                 }
             }
@@ -79,7 +79,6 @@ function spider(data) {
                 }
             }
         }
-        console.log(mainTab)
         if (mainTab != null) {
             //设置代理
             helper.setProxy(function () {

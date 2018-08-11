@@ -216,7 +216,7 @@ class Helper {
      * @returns {*}
      */
     randomArr(arr) {
-        return arr[this.random(0, arr.length)];
+        return arr[this.random(0, arr.length-1)];
     }
 
     /**

@@ -1,5 +1,6 @@
 //为兼容firefox和chrome
 var getproxy_url = 'https://survey.yhdjy.cn/admin/getproxy';
+var getproxy2_url = 'https://survey.yhdjy.cn/admin/getproxy2';
 if (typeof chrome == 'undefined') {
     var chrome = browser;
 }
@@ -68,44 +69,29 @@ class Helper {
     }
 
     /**
-     * 获取代理IP 接口2
+     * 获取代理IP   接口2
      * @param callback
      */
-    getProxy2(callback) {
+    gettProxy(callback) {
         this.getStorage('ip_list', function (data) {
-            var url = 'http://proxy.httpdaili.com/apinew.asp?sl=10&noinfo=true&ddbh=198267548378067011';
-            var ajax = new XMLHttpRequest();
-            ajax.open('get', url);
-            ajax.send();
-            return ajax.onreadystatechange = function () {
-                if (ajax.readyState == 4 && ajax.status == 200) {
-                    var content = ajax.responseText;
-                    content = content.replace(' ', '');
-                    var ips = content.split(/\n/);
-                    var result = [];
-                    for (let ip of ips) {
-                        if (ip != '') {
-                            result.push(ip);
-                        }
+            var url = getproxy2_url;
+            $.get(url, function (ret) {
+                if (ret && ret.indexOf(':')) {
+                    if (data.ips && data.ips == ret) {
+                        helper.cancelProxy();
+                        return false;
                     }
-                    var save = result;
-                    if (data && data.ips) {
-                        var ip = data.ips[0];
-                        if (result.indexOf(ip) != -1) {
-                            save = data.ips;
-                        }
-                    }
-                    var use = save.pop();
-                    var count = data.count ? data.count++ : 1;
-                    helper.setStorage('ip_list', {ips: save, count: count});
+                    var count = data.count ? data.count+1 : 1;
+                    helper.setStorage('ip_list', {ips: ret, count: count})
                     if (typeof callback == 'function') {
-                        var ip = use.split(':');
-                        callback(use)
+                        var ip = ret.split(':');
+                        callback(ip[0], ip[1]);
                     }
                 }
-            }
-        })
+            });
+        });
     }
+
 
     /**
      * 设置代理
@@ -231,7 +217,6 @@ class Helper {
                         break;
                     }
                 }
-                console.log(details.requestHeaders)
                 return {requestHeaders: details.requestHeaders};
             },
             {urls: ['<all_urls>']},
