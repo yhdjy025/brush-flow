@@ -1,5 +1,6 @@
 //为兼容firefox和chrome
 var getip_url = 'https://survey.yhdjy.cn/admin/getip';
+var getKeywords_url = 'https://survey.yhdjy.cn/admin/getKeywords';
 if (typeof chrome == 'undefined') {
     var chrome = browser;
 }
@@ -227,6 +228,18 @@ class Helper {
      */
     random(min, max) {
         return Math.round(min + Math.random() * max);
+    }
+
+    /**
+     * 获取随机关键词
+     * @param callback
+     */
+    randomKeywords(callback) {
+        $.get(getKeywords_url, function (ret) {
+            if (typeof callback == 'function') {
+                callback(ret);
+            }
+        });
     }
 }
 
