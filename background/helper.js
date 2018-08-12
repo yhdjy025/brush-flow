@@ -57,7 +57,7 @@ class Helper {
                         helper.cancelProxy();
                         return false;
                     }
-                    var count = data.count ? data.count+1 : 1;
+                    var count = data.count ? data.count + 1 : 1;
                     helper.setStorage('ip_list', {ips: ret, count: count})
                     if (typeof callback == 'function') {
                         var ip = ret.split(':');
@@ -81,7 +81,7 @@ class Helper {
                         helper.cancelProxy();
                         return false;
                     }
-                    var count = data.count ? data.count+1 : 1;
+                    var count = data.count ? data.count + 1 : 1;
                     helper.setStorage('ip_list', {ips: ret, count: count})
                     if (typeof callback == 'function') {
                         var ip = ret.split(':');

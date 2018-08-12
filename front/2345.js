@@ -7,7 +7,7 @@ $(function () {
             setTimeout(function () {
                 //页面向下随机滚动
                 window.scrollTo(0, helper.random(0, 1000));
-                while(true) {
+                while (true) {
                     var links = $('#content').find('a');
                     if (links.length > 0) {
                         console.log(links)
