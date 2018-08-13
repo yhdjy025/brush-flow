@@ -3,7 +3,7 @@ $(function () {
         console.log('------------2345------------');
         //更改分辨率
         helper.setScreen();
-        if (/*data.select && data.select == 1 && */data.type && data.type == '2345') {
+        if (data.select && data.select == 1 && data.type && data.type == '2345') {
             setTimeout(function () {
                 //页面向下随机滚动
                 while (true) {
