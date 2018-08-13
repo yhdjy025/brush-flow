@@ -99,7 +99,7 @@ class Helper {
      */
     setProxy(callback) {
         helper.cancelProxy();
-        this.gettProxy(function (ip, port) {
+        this.gettProxy2(function (ip, port) {
             var config = {
                 mode: 'fixed_servers',
                 rules: {
