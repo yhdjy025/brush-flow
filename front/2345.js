@@ -11,7 +11,9 @@ $(function () {
                     if (links.length > 0) {
                         helper.randomKeywords(function (ret) {
                             $('#J_schInbox').find('input[name=word]').val(ret);
-                            $('#j_search_sbm').click();
+                            setTimeout(function () {
+                                document.getElementById('j_search_sbm').click();
+                            }, 500)
                         });
                         //从其中随机选一个链接打开(因为导航要求是打开以后 还要又持续点击才算数)
                         setTimeout(function () {
