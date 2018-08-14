@@ -42,32 +42,17 @@ $(function () {
 
 
 function changeOsType() {
-    var os = [
-        'Windows 10',
-        'Windows 8',
-        'Windows 7',
-        'Windows XP'
-    ];
-    var randomOs = helper.randomArr(os);
-    var jsCode = 'GLOBAL.Util.getOsType = function(){return "' + randomOs + '"};';
-    helper.runJsByTag(jsCode, 'change-os');
+    helper.getStorage('osProfile', function (data) {
+        var jsCode = 'GLOBAL.Util.getOsType = function(){return "' + data.osProfile + '"};';
+        helper.runJsByTag(jsCode, 'change-os');
+    });
 }
 
 function changeBrowser() {
-    var browser = [
-        'IE',
-        'firefox',
-        'chrome',
-        '360',
-        'QQ',
-        '2345',
-        'sogou',
-        'liebao',
-        'UC'
-    ];
-    var randomBroswer = helper.randomArr(browser);
-    var jsCode = 'GLOBAL.Util.getBrowserType = function(){return "' + randomBroswer + '"};';
-    helper.runJsByTag(jsCode, 'change-broswer');
+    helper.getStorage('browserCategory', function (data) {
+        var jsCode = 'GLOBAL.Util.getBrowserType = function(){return "' + data.browserCategory + '"};';
+        helper.runJsByTag(jsCode, 'change-broswer');
+    })
 }
 
 
