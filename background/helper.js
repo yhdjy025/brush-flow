@@ -200,7 +200,54 @@ class Helper {
             'Windows NT 5.1'
         ];
         var selectedUa = this.randomArr(ua);
-        selectedUa = selectedUa.replace('Windows NT 10.0', this.randomArr(os));
+        var randomOs = this.randomArr(os);
+        selectedUa = selectedUa.replace('Windows NT 10.0', randomOs);
+        helper.getStorage('open_flow', function (data) {
+            if (data.type == '7654') {
+
+                /**
+                 * 设置操作系统类型，7654 内容脚本需要获取
+                 * */
+                var osProfile;
+                var browserCategory;
+                switch (randomOs) {
+                    case 'Windows NT 10.0':
+                        osProfile = 'Windows 10';
+                        break;
+                    case 'Windows NT 6.2':
+                        osProfile = 'Windows 8';
+                        break;
+                    case 'Windows NT 6.1':
+                        osProfile = 'Windows 7';
+                        break;
+                    case 'Windows NT 5.1':
+                        osProfile = 'Windows xp';
+                        break;
+                }
+                helper.setStorage('osProfile', osProfile);
+
+                /**
+                 * 设置浏览器类别
+                 * */
+                if (selectedUa.indexOf('Trident') != -1 || selectedUa.indexOf('MSIE') != -1) {
+                    /**
+                     * ie浏览器，忽略版本号
+                     * */
+                    browserCategory = 'IE';
+                } else if (selectedUa.indexOf('QQBrowser') != -1) {
+                    browserCategory = 'QQ';
+                } else if (selectedUa.indexOf('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36') != -1) {
+                    browserCategory = 'chrome';
+                } else if (selectedUa.indexOf('Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0') != -1) {
+                    browserCategory = 'firefox';
+                } else if (selectedUa.indexOf('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36') != -1) {
+                    browserCategory = '360';
+                } else if (selectedUa.indexOf('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.108 Safari/537.36 2345Explorer/8.8.0.16453') != -1) {
+                    browserCategory = '2345';
+                }
+                helper.setStorage('browserCategory', browserCategory);
+            }
+        });
         return selectedUa;
     }
 
@@ -212,7 +259,7 @@ class Helper {
         chrome.webRequest.onBeforeSendHeaders.addListener(
             function (details) {
                 for (var i = 0; i < details.requestHeaders.length; i++) {
-                    if (details.requestHeaders[i].name === 'User-Agent') {
+                    if (details.requestHeaders[i].name === 'User-Agent' || details.requestHeaders[i].name === 'Cookie') {
                         details.requestHeaders[i].value = ua;
                         break;
                     }
