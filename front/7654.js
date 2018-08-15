@@ -10,32 +10,11 @@ $(function () {
         changeBrowser();
         //取时间间隔
         if (data.select && data.select == 1 && data.type && data.type == '7654') {
-            setTimeout(function () {
-                //页面向下随机滚动
-                window.scrollTo(0, helper.random(1000));
-                while (true) {
-                    var links = $('#J_dh_body').find('a');
-                    if (links.length > 0) {
-                        helper.randomKeywords(function (ret) {
-                            $('#J_search_input').val(ret);
-                            setTimeout(function () {
-                                document.getElementById('J_search_submit_btn').click();
-                            }, 1000);
-                        });
-                        //从其中随机选一个链接打开(因为导航要求是打开以后 还要又持续点击才算数)
-                        setTimeout(function () {
-                            window.scrollTo(0, helper.random(0, 1000));
-                            var clickDom1 = helper.randomArr(links);
-                            clickDom1.click();
-                        }, 3000);
-                        setTimeout(function () {
-                            var clickDom2 = helper.randomArr(links);
-                            clickDom2.click();
-                        }, 6000);
-                        break;
-                    }
-                }
-            }, 5000);
+            //给50%的转化率
+            var isReal = helper.random(0, 10);
+            if (isReal < 5)
+                return false;
+            continueClick();
         }
     });
 });
@@ -53,6 +32,37 @@ function changeBrowser() {
         var jsCode = 'GLOBAL.Util.getBrowserType = function(){return "' + data.browserCategory + '"};';
         helper.runJsByTag(jsCode, 'change-broswer');
     })
+}
+
+
+/**
+ * 持续点击操作
+ */
+function continueClick() {
+    setTimeout(function () {
+        var type = helper.random(0, 3);
+        if (1 == type) {
+            //点击
+            var links = $('#J_dh_body').find('a');
+            if (links.length > 0) {
+                setTimeout(function () {
+                    window.scrollTo(0, helper.random(0, 1000));
+                    var clickDom1 = helper.randomArr(links);
+                    clickDom1.click();
+                }, 500);
+            }
+        }  else {
+            //搜索
+            helper.randomKeywords(function (ret) {
+                $('#J_search_input').val(ret);
+                setTimeout(function () {
+                    document.getElementById('J_search_submit_btn').click();
+                }, 500);
+            });
+        }
+        //调用自己实现循环
+        continueClick();
+    }, helper.randomSeconds(20) * 1000)
 }
 
 

@@ -169,7 +169,6 @@ class Helper {
     randomSeconds(avg) {
         avg = Math.round(avg);
         let start = avg / 2;
-        let end = avg + start;
         let random = Math.random();
         return Math.round(start + random * avg);
     }
