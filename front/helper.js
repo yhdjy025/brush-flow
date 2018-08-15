@@ -241,6 +241,19 @@ class Helper {
             }
         });
     }
+
+    /**
+     *  生成随机秒数
+     * @param avg           平均值
+     * @returns {number}
+     */
+    randomSeconds(avg) {
+        avg = Math.round(avg);
+        let start = avg / 2;
+        let end = avg + start;
+        let random = Math.random();
+        return Math.round(start + random * avg);
+    }
 }
 
 var helper = new Helper();

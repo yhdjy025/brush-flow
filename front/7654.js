@@ -9,7 +9,7 @@ $(function () {
         //更改浏览器
         changeBrowser();
         //取时间间隔
-        if (data.select && data.select == 1 && data.type && data.type == '7654') {
+        if (/*data.select && data.select == 1 && */data.type && data.type == '7654') {
             //给50%的转化率
             var isReal = helper.random(0, 10);
             if (isReal < 5)
@@ -61,7 +61,7 @@ function continueClick() {
             });
         }
         //调用自己实现循环
-        continueClick();
+        //continueClick();
     }, helper.randomSeconds(20) * 1000)
 }
 
