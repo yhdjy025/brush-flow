@@ -5,9 +5,9 @@ $(function () {
         //更改分辨率
         helper.setScreen();
         if (data.select && data.select == 1 && data.type && data.type == '2345') {
-            //给50%的转化率
+            //给70%的转化率
             var isReal = helper.random(0, 10);
-            if (isReal < 5)
+            if (isReal <= 3)
                 return false;
             //页面向下随机滚动
             continueClick();
@@ -42,5 +42,5 @@ function continueClick() {
         }
         //调用自己实现循环
         continueClick();
-    }, helper.randomSeconds(20)*1000)
+    }, helper.randomSeconds(15)*1000)
 }
