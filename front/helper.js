@@ -185,6 +185,9 @@ class Helper {
         newScreen.colorDepth = rdBit;
         let jsCode = 'window.screen = ' + JSON.stringify(newScreen) + ';';
         this.runJsByTag(jsCode, 'change-screen');
+        //修改网页可是宽高
+        let jsCode2 = 'window.innerWidth='+random.width+'; window.innerHeight='+random.height+';';
+        this.runJs(jsCode2, 'change-window-visable');
 
     }
 

@@ -178,77 +178,40 @@ class Helper {
     getRandomUA() {
         var ua = [
             //IE
-            'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; rv:11.0) like Gecko',
-            'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E)',
-            'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E)',
-            'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E)',
+            {ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; rv:11.0) like Gecko', browser: 'IE'},
+            {ua: 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E)', browser: 'IE'},
+            {ua: 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E)', browser: 'IE'},
+            {ua: 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E)', browser: 'IE'},
             //QQ
-            'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.104 Safari/537.36 Core/1.53.3427.400 QQBrowser/9.6.12201.400',
+            {ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.104 Safari/537.36 Core/1.53.3427.400 QQBrowser/9.6.12201.400', browser: 'QQ'},
             //chrome
-            'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36',
+            {ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36', browser: 'chrome'},
             //firefox
-            'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0',
+            {ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', browser: 'firefox'},
             //360
-            'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+            {ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36', browser: '360'},
             //2345
-            'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.108 Safari/537.36 2345Explorer/8.8.0.16453'
+            {ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.108 Safari/537.36 2345Explorer/8.8.0.16453', browser: '2345'},
         ];
         var os = [
-            'Windows NT 10.0',
-            'Windows NT 6.2',
-            'Windows NT 6.1',
-            'Windows NT 5.1'
+            {version: 'Windows NT 10.0', os: 'Windows 10'},
+            {version: 'Windows NT 6.2', os: 'Windows 8'},
+            {version: 'Windows NT 6.1', os: 'Windows 7'},
+            {version: 'Windows NT 5.1', os: 'Windows xp'}
         ];
-        var selectedUa = this.randomArr(ua);
+        //随机取ua
+        var randomUa = this.randomArr(ua);
+        //随机取os
         var randomOs = this.randomArr(os);
-        selectedUa = selectedUa.replace('Windows NT 10.0', randomOs);
+        //替换ua种的os
+        randomUa.ua = randomUa.ua.replace('Windows NT 10.0', randomOs.version);
         helper.getStorage('open_flow', function (data) {
             if (data.type == '7654') {
-
-                /**
-                 * 设置操作系统类型，7654 内容脚本需要获取
-                 * */
-                var osProfile;
-                var browserCategory;
-                switch (randomOs) {
-                    case 'Windows NT 10.0':
-                        osProfile = 'Windows 10';
-                        break;
-                    case 'Windows NT 6.2':
-                        osProfile = 'Windows 8';
-                        break;
-                    case 'Windows NT 6.1':
-                        osProfile = 'Windows 7';
-                        break;
-                    case 'Windows NT 5.1':
-                        osProfile = 'Windows xp';
-                        break;
-                }
-                helper.setStorage('osProfile', osProfile);
-
-                /**
-                 * 设置浏览器类别
-                 * */
-                if (selectedUa.indexOf('Trident') != -1 || selectedUa.indexOf('MSIE') != -1) {
-                    /**
-                     * ie浏览器，忽略版本号
-                     * */
-                    browserCategory = 'IE';
-                } else if (selectedUa.indexOf('QQBrowser') != -1) {
-                    browserCategory = 'QQ';
-                } else if (selectedUa.indexOf('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36') != -1) {
-                    browserCategory = 'chrome';
-                } else if (selectedUa.indexOf('Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0') != -1) {
-                    browserCategory = 'firefox';
-                } else if (selectedUa.indexOf('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36') != -1) {
-                    browserCategory = '360';
-                } else if (selectedUa.indexOf('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.108 Safari/537.36 2345Explorer/8.8.0.16453') != -1) {
-                    browserCategory = '2345';
-                }
-                helper.setStorage('browserCategory', browserCategory);
+                helper.setStorage('osProfile', randomOs.os);
+                helper.setStorage('browserCategory', randomUa.browser);
             }
         });
-        return selectedUa;
+        return randomUa.ua;
     }
 
     /**

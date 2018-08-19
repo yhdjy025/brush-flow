@@ -43,6 +43,9 @@ function start(data) {
             case '2345':
                 spider(data);
                 break;
+            case 'sougou':
+                spider(data);
+                break;
             case 'qqsoft':
                 helper.cancelDoenload();
                 spider(data);
@@ -70,6 +73,11 @@ function spider(data) {
             }
             if (data.type == '2345') {
                 if (tab.url.indexOf('www.2345.com/?') != -1) {
+                    mainTab = tab;
+                }
+            }
+            if (data.type == '2345') {
+                if (tab.url.indexOf('123.sogou.com') != -1) {
                     mainTab = tab;
                 }
             }
