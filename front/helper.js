@@ -186,8 +186,8 @@ class Helper {
         let jsCode = 'window.screen = ' + JSON.stringify(newScreen) + ';';
         this.runJsByTag(jsCode, 'change-screen');
         //修改网页可是宽高
-        let jsCode2 = 'window.innerWidth='+random.width+'; window.innerHeight='+random.height+';';
-        this.runJs(jsCode2, 'change-window-visable');
+        let jsCode2 = 'document.body.clientWidth='+(random.width-17)+'; document.body.clientHeight='+(random.height-helper.random(1, 100))+';';
+        this.runJsByTag(jsCode2, 'change-window-visable');
 
     }
 
@@ -195,13 +195,17 @@ class Helper {
      * 运行js
      * @param jsCode
      * @param id
-     * 因为 插件js是不能直接调用网页的js的 所以这里通过页面插入一个元素 点后用点击时间取运行网页的js
+     * 因为 插件js是不能直接调用网页的js的 所以这里通过页面插入一个元素调用js
      */
     runJsByTag(jsCode, id) {
-        $('body').find('#' + id).remove();
-        let html = "<a id='" + id + "' href='javascript:;' onclick='" + jsCode + "'></a>"
-        $('body').append(html);
-        document.getElementById(id).click();
+        var interval = setInterval(function () {
+            if ($('head').length > 0) {
+                $('head').find('#' + id).remove();
+                var tag = '<script id="'+id+'">'+jsCode+'</script>';
+                $('head').append(tag);
+                clearInterval(interval);
+            }
+        }, 1);
     }
 
     /**
@@ -260,3 +264,5 @@ class Helper {
 }
 
 var helper = new Helper();
+//更改分辨率
+helper.setScreen();
