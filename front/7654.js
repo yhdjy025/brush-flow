@@ -7,7 +7,7 @@ $(function () {
         //更改浏览器
         changeBrowser();
         //取时间间隔
-        if (/*data.select && data.select == 1 && */data.type && data.type == '7654') {
+        if (data.select && data.select == 1 && data.urls.url7654 && data.urls.url7654.open) {
             //给70%的转化率
             var isReal = helper.random(0, 10);
             if (isReal <= 3)

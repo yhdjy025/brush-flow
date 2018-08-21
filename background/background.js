@@ -35,25 +35,7 @@ function start(data) {
     interval1 = setInterval(function () {
         //设置useragent 其实是用webRequest接口拦截请求 修改header里的UA
         helper.setUa();
-        //不同类型的刷流量处理
-        switch (data.type) {
-            case '7654':
-                spider(data);
-                break;
-            case '2345':
-                spider(data);
-                break;
-            case 'sougou':
-                spider(data);
-                break;
-            case 'qqsoft':
-                helper.cancelDoenload();
-                spider(data);
-                break;
-            default:
-                return false;
-                break;
-        }
+        spider(data);
     }, times * 1000);
 }
 
@@ -65,35 +47,18 @@ function spider(data) {
         var mainTab = null;
         for (let tab of tabs) {
             tabsId.push(tab.id);
-            //找出哪个刷流量的网站的标签
-            if (data.type == '7654') {
-                if (tab.url.indexOf('hao.7654.com/?chno') != -1) {
-                    mainTab = tab;
-                }
-            }
-            if (data.type == '2345') {
-                if (tab.url.indexOf('www.2345.com/?') != -1) {
-                    mainTab = tab;
-                }
-            }
-            if (data.type == '2345') {
-                if (tab.url.indexOf('123.sogou.com') != -1) {
-                    mainTab = tab;
-                }
-            }
-            if (data.type == 'qqsoft') {
-                if (tab.url.indexOf('pc.qq.com') != -1) {
-                    mainTab = tab;
-                }
-            }
         }
-        if (mainTab != null) {
+        if (mainTab != null && data.urls) {
             //设置代理
             helper.setProxy(function () {
                 //清理缓存 cookie storage登 各种缓存
                 helper.clearCache(function () {
                     //重新打开要刷流量的网站
-                    chrome.tabs.create({url: mainTab.url});
+                     $.each(data.urls, function (i, v) {
+                         if (v.open) {
+                             chrome.tabs.create({url: v.url});
+                         }
+                     })
                     //关闭之前的旧的所有页面
                     chrome.tabs.remove(tabsId);
                 });

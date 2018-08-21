@@ -15,8 +15,14 @@ $(function () {
                 $('#open-flow').attr('checked', true);
             }
             $('#time-interval').val(data.open_flow.time ? data.open_flow.time : 30);
-            if (data.open_flow.type) {
-                $('input[value='+data.open_flow.type+']').attr('checked', true);
+            if (data.open_flow.urls) {
+                $.each(data.open_flow.urls, function (name, value) {
+                    var input = $('#url-list').find('input[name='+name+']');
+                    $(input).val(value.url);
+                    if (value.open) {
+                        $(input).prev().find('.url-open').addClass('btn-success');
+                    }
+                });
             }
         }
     });
@@ -54,19 +60,40 @@ $(function () {
         }
     });
 
-    //修改数据
-    $('#open-flow,#time-interval,input[name=type]').on('change', function () {
-        var time = $('#time-interval').val();
-        var status = {
-            select: $('#open-flow').is(':checked') ? 1 : 0,
-            type: $('input[name=type]:checked').val(),
-            time: time ? time : 30
-        };
-        console.log(status)
-        chrome.storage.local.set({open_flow: status});
+    //更改设置
+    $('#open-flow,#time-interval').on('change', function () {
+        updateUrl();
     });
+
+    $('#url-list').on('click', '.url-open', function () {
+        $(this).toggleClass('btn-success');
+        updateUrl();
+    })
+    $('#url-list').on('change', 'input', function () {
+        updateUrl();
+    })
 })
 
+function updateUrl() {
+    var time = $('#time-interval').val();
+    var select = $('#open-flow').is(':checked') ? 1 : 0;
+    var urls = {};
+    $('#url-list').find('input[type=text]').each(function (i, v) {
+        var name = $(v).attr('name');
+        var url = $(v).val();
+        var open = $(v).prev().find('.url-open').hasClass('btn-success');
+        urls[name] = {
+            url: url,
+            open: open
+        };
+    });
+    var open_flow = {
+        time: time ? time : 100,
+        select: select,
+        urls: urls
+    };
+    chrome.storage.local.set({open_flow: open_flow});
+}
 //Y运行js
 function runJs(tabId, code, callback) {
     chrome.tabs.executeScript(tabId, {

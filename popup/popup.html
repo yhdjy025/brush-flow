@@ -10,22 +10,8 @@
     <title>Survey Tool</title>
 </head>
 <body>
-<div class="container" style="min-width: 250px;">
+<div class="container" style="min-width: 350px;">
     <ul class="list-group">
-        <li class="list-group-item" style="padding-left: 30px;">
-            <label class="radio">
-                <input type="radio" name="type" value="2345"> 2345导航
-            </label>
-            <label class="radio">
-                <input type="radio" name="type" value="7654"> 7654导航
-            </label>
-            <label class="radio">
-                <input type="radio" name="type" value="sougou"> 搜狗导航
-            </label>
-            <label class="radio">
-                <input type="radio" name="type" value="qqsoft"> 腾讯软件管理
-            </label>
-        </li>
         <li class="list-group-item" style="padding-left: 30px;">
             <label for="open-flow" class="checkbox">
                 <input type="checkbox" id="open-flow" value="1"> 开启刷流量
@@ -42,6 +28,80 @@
             代理统计：<span id="count-ip">0</span>
             <label class="label btn-danger pull-right" id="clear-count">清空</label>
         </li>
+
+        <li class="list-group-item" id="url-list">
+            <div class="form-group">
+                <label>2345导航</label>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-sm url-open" type="button">
+                            <i class="glyphicon glyphicon-ok"></i>
+                        </button>
+                      </span>
+                    <input type="text" name="url2345" class="form-control input-sm" placeholder="2345盗号地址">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>7654导航</label>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-sm url-open" type="button">
+                            <i class="glyphicon glyphicon-ok"></i>
+                        </button>
+                      </span>
+                    <input type="text" name="url7654" class="form-control input-sm" placeholder="7654导航地址">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>QQ装机部落搜狗导航</label>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-sm url-open" type="button">
+                            <i class="glyphicon glyphicon-ok"></i>
+                        </button>
+                      </span>
+                    <input type="text" name="urlsougou" class="form-control input-sm" placeholder="QQ装机部落搜狗导航地址">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>360导航</label>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-sm url-open" type="button">
+                            <i class="glyphicon glyphicon-ok"></i>
+                        </button>
+                      </span>
+                    <input type="text" name="url360" class="form-control input-sm" placeholder="360导航地址">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>蓝光联盟hao123导航</label>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-sm url-open" type="button">
+                            <i class="glyphicon glyphicon-ok"></i>
+                        </button>
+                    </span>
+                    <input type="text" name="urlhao123" class="form-control input-sm" placeholder="蓝光联盟hao123导航地址">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>毒霸导航</label>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default btn-sm url-open" type="button">
+                            <i class="glyphicon glyphicon-ok"></i>
+                        </button>
+                      </span>
+                    <input type="text" name="urlduba" class="form-control input-sm" placeholder="毒霸导航地址">
+                </div>
+            </div>
+        </li>
+
+        <!--<li class="list-group-item row">
+            <label><input type="radio" name="type" value="qqsoft"> 腾讯软件管理</label>
+            <input type="text" name="qqsofturl" class="form-control input-sm" value="">
+        </li>-->
 
     </ul>
 </div>
