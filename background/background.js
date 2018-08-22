@@ -56,7 +56,7 @@ function start() {
 function spider(data) {
     //查找所有打开的浏览器标签
     try {
-        chrome.tabs.query({}, function (tabs) {
+        chrome.tabs.getAllInWindow(function (tabs) {
             var tabsId = [];
             for (let tab of tabs) {
                 tabsId.push(tab.id);
@@ -66,12 +66,6 @@ function spider(data) {
                 helper.setProxy(function () {
                     //清理缓存 cookie storage登 各种缓存
                     helper.clearCache(function () {
-                        //重新打开要刷流量的网站
-                        $.each(data.urls, function (i, v) {
-                            if (v.open) {
-                                chrome.tabs.create({url: v.url});
-                            }
-                        })
                         //关闭之前的旧的所有页面
                         chrome.tabs.remove(tabsId);
                         //循环调用
