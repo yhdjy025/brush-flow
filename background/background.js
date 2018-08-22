@@ -30,7 +30,7 @@ setInterval(function () {
 }, 1000);
 
 //启动刷流量
-function start() {
+function start(tabids) {
     if (0 == openFlag) return false;
     //载读取一次，为了可是随时改时间，而不用重启
     helper.getStorage('open_flow', function (data) {
@@ -42,6 +42,11 @@ function start() {
             }
         });
         if (0 == isOpenUrl) return false;
+        console.log('new brush');
+        if (tabids) {
+            //关闭之前得tab
+            chrome.tabs.remove(tabids);
+        }
         let times = helper.randomSeconds(data.time ? data.time : 30);
         //为了岁时间间隔 所以用setTimeout
         setTimeout(function () {
@@ -56,20 +61,19 @@ function start() {
 function spider(data) {
     //查找所有打开的浏览器标签
     try {
-        chrome.tabs.getAllInWindow(function (tabs) {
-            var tabsId = [];
+        chrome.tabs.query({}, function (tabs) {
+            console.log(tabs)
+            var tabids = [];
             for (let tab of tabs) {
-                tabsId.push(tab.id);
+                tabids.push(tab.id);
             }
-            if (tabsId.length > 0) {
+            if (tabids.length > 0) {
                 //设置代理
                 helper.setProxy(function () {
                     //清理缓存 cookie storage登 各种缓存
                     helper.clearCache(function () {
                         //关闭之前的旧的所有页面
-                        chrome.tabs.remove(tabsId);
-                        //循环调用
-                        start();
+                        start(tabids);
                     });
                 });
             }
