@@ -140,7 +140,7 @@ class Helper {
         if (data == null) {
             data = {
                 "appcache": true,
-                "cache": true,
+                //"cache": true,
                 "cookies": true,
                 "downloads": true,
                 "fileSystems": true,

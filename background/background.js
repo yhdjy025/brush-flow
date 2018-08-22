@@ -35,10 +35,13 @@ function start(tabids) {
     //载读取一次，为了可是随时改时间，而不用重启
     helper.getStorage('open_flow', function (data) {
         var isOpenUrl = 0;
+        var left = 0;
         $.each(data.urls, function (i, v) {
             if (v.open) {
                 isOpenUrl = 1;
-                chrome.tabs.create({url: v.url});
+                //chrome.tabs.create({url: v.url});
+                chrome.windows.create({url: v.url, left: left});
+                left += 200;
             }
         });
         if (0 == isOpenUrl) return false;

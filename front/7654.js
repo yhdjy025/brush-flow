@@ -62,7 +62,7 @@ function continueClick() {
         }
         //调用自己实现循环
         //continueClick();
-    }, helper.randomSeconds(15) * 1000)
+    }, helper.randomSeconds(10) * 1000)
 }
 
 
