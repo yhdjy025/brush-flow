@@ -9,60 +9,79 @@
 
 helper.cancelProxy();
 
-var interval1 = null;
+var openFlag = 0;
 helper.setUa();
 ///检测状态
 setInterval(function () {
     helper.getStorage('open_flow', function (data) {
         helper.randomSeconds(data.time ? data.time : 30)
         if (data.select == 1) {
-            if (interval1 == null) {    //如果未启动
-                start(data);
+            if (openFlag == 0) {    //如果未启动
+                console.log('----------start--------');
+                openFlag = 1;       //避免重复开启
+                start();
             }
-        } else if (interval1 != null) {
-            clearInterval(interval1);
+        } else if (openFlag == 1) {
             console.log('------stop----------')
             helper.cancelProxy();       //推出代理
-            interval1 = null;           //清空定时器
+            openFlag = 0;
         }
     });
 }, 1000);
 
 //启动刷流量
-function start(data) {
-    console.log('----------start--------');
-    let times = helper.randomSeconds(data.time ? data.time : 30);
-    interval1 = setInterval(function () {
-        //设置useragent 其实是用webRequest接口拦截请求 修改header里的UA
-        helper.setUa();
-        spider(data);
-    }, times * 1000);
+function start() {
+    if (0 == openFlag) return false;
+    //载读取一次，为了可是随时改时间，而不用重启
+    helper.getStorage('open_flow', function (data) {
+        var isOpenUrl = 0;
+        $.each(data.urls, function (i, v) {
+            if (v.open) {
+                isOpenUrl = 1;
+                chrome.tabs.create({url: v.url});
+            }
+        });
+        if (0 == isOpenUrl) return false;
+        let times = helper.randomSeconds(data.time ? data.time : 30);
+        //为了岁时间间隔 所以用setTimeout
+        setTimeout(function () {
+            //拦截设置UA
+            helper.setUa();
+            spider(data);
+        }, times * 1000);
+    });
 }
 
 ///循环刷
 function spider(data) {
     //查找所有打开的浏览器标签
-    chrome.tabs.query({}, function (tabs) {
-        var tabsId = [];
-        var mainTab = null;
-        for (let tab of tabs) {
-            tabsId.push(tab.id);
-        }
-        if (mainTab != null && data.urls) {
-            //设置代理
-            helper.setProxy(function () {
-                //清理缓存 cookie storage登 各种缓存
-                helper.clearCache(function () {
-                    //重新打开要刷流量的网站
-                     $.each(data.urls, function (i, v) {
-                         if (v.open) {
-                             chrome.tabs.create({url: v.url});
-                         }
-                     })
-                    //关闭之前的旧的所有页面
-                    chrome.tabs.remove(tabsId);
+    try {
+        chrome.tabs.query({}, function (tabs) {
+            var tabsId = [];
+            for (let tab of tabs) {
+                tabsId.push(tab.id);
+            }
+            if (tabsId.length > 0) {
+                //设置代理
+                helper.setProxy(function () {
+                    //清理缓存 cookie storage登 各种缓存
+                    helper.clearCache(function () {
+                        //重新打开要刷流量的网站
+                        $.each(data.urls, function (i, v) {
+                            if (v.open) {
+                                chrome.tabs.create({url: v.url});
+                            }
+                        })
+                        //关闭之前的旧的所有页面
+                        chrome.tabs.remove(tabsId);
+                        //循环调用
+                        start();
+                    });
                 });
-            });
-        }
-    });
+            }
+        });
+    } catch (e) {
+        console.log(e)
+        openFlag = 0;   //出错了后让守护进程重试
+    }
 }
