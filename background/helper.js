@@ -272,10 +272,15 @@ class Helper {
         )
     }
 
+    /**
+     * 拦截请求 修改参数
+     */
     beforeRequest() {
         chrome.webRequest.onBeforeRequest.addListener(function (details) {
-                if (details.url.indexOf('survey.yhdjy.cn/admin/test') != -1)  {
-                    return {redirectUrl: 'http://du.yhdjy.cn'};
+                if (details.url.indexOf('pb.sogou.com/pv.gif?') != -1)  {
+                    var bodyWH = '1366x768';
+                    var url = details.url.replace(/mtmvp=.*?\&/, 'mtmvp=' + bodyWH + '&');
+                    return {redirectUrl: url};
                 }
             },
             {urls: ['<all_urls>']},
