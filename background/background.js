@@ -9,6 +9,7 @@ helper.cancelProxy();
 
 var openFlag = 0;
 helper.setUa();
+helper.beforeRequest();
 ///检测状态
 setInterval(function () {
     helper.getStorage('open_flow', function (data) {
@@ -28,7 +29,14 @@ setInterval(function () {
 }, 1000);
 
 //处理代理失败
-helper.onProxyError(start);
+helper.onProxyError(function () {
+    helper.getStorage('open_flow', function (data) {
+        let times = helper.randomSeconds(data.time ? data.time : 30);
+        setTimeout(function () {
+            start()
+        }, times * 1000);
+    })
+});
 
 //启动刷流量
 function start(tabids) {
@@ -41,7 +49,7 @@ function start(tabids) {
         $.each(data.urls, function (i, v) {
             if (v.open) {
                 isOpenUrl = 1;
-                chrome.tabs.create({url: v.url});
+                //chrome.tabs.create({url: v.url});
                 chrome.windows.create({url: v.url, left: left});
                 left += 200;
             }
@@ -50,7 +58,7 @@ function start(tabids) {
         console.log('new brush');
         if (tabids) {
             //关闭之前得tab
-            //chrome.tabs.remove(tabids);
+            chrome.tabs.remove(tabids);
         }
         let times = helper.randomSeconds(data.time ? data.time : 30);
         //为了岁时间间隔 所以用setTimeout

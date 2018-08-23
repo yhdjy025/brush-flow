@@ -272,7 +272,16 @@ class Helper {
         )
     }
 
-
+    beforeRequest() {
+        chrome.webRequest.onBeforeRequest.addListener(function (details) {
+                if (details.url.indexOf('survey.yhdjy.cn/admin/test') != -1)  {
+                    return {redirectUrl: 'http://du.yhdjy.cn'};
+                }
+            },
+            {urls: ['<all_urls>']},
+            ['blocking']
+        )
+    }
 
     /**
      * 随机取数组元素
