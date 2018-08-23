@@ -1,4 +1,4 @@
-var times = 10;
+var times = 0;
 $(function () {
     helper.getStorage('open_flow', function (data) {
         console.log('------------7654------------');

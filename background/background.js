@@ -2,11 +2,9 @@
  * @var open_flow 这个变量是存在localstorage里的
  *      'time' => 时间间隔
  *      'select' => 是否开启刷流量功能
- *      'type' => 刷流量类型  2345、7654、qq软件管家
  */
-
 'use strict';
-
+//取消代理
 helper.cancelProxy();
 
 var openFlag = 0;
@@ -29,8 +27,12 @@ setInterval(function () {
     });
 }, 1000);
 
+//处理代理失败
+helper.onProxyError(start);
+
 //启动刷流量
 function start(tabids) {
+    selectedUa = helper.getRandomUA();
     if (0 == openFlag) return false;
     //载读取一次，为了可是随时改时间，而不用重启
     helper.getStorage('open_flow', function (data) {
@@ -39,7 +41,7 @@ function start(tabids) {
         $.each(data.urls, function (i, v) {
             if (v.open) {
                 isOpenUrl = 1;
-                //chrome.tabs.create({url: v.url});
+                chrome.tabs.create({url: v.url});
                 chrome.windows.create({url: v.url, left: left});
                 left += 200;
             }
@@ -48,13 +50,12 @@ function start(tabids) {
         console.log('new brush');
         if (tabids) {
             //关闭之前得tab
-            chrome.tabs.remove(tabids);
+            //chrome.tabs.remove(tabids);
         }
         let times = helper.randomSeconds(data.time ? data.time : 30);
         //为了岁时间间隔 所以用setTimeout
         setTimeout(function () {
             //拦截设置UA
-            helper.setUa();
             spider(data);
         }, times * 1000);
     });
@@ -63,26 +64,21 @@ function start(tabids) {
 ///循环刷
 function spider(data) {
     //查找所有打开的浏览器标签
-    try {
-        chrome.tabs.query({}, function (tabs) {
-            console.log(tabs)
-            var tabids = [];
-            for (let tab of tabs) {
-                tabids.push(tab.id);
-            }
-            if (tabids.length > 0) {
-                //设置代理
-                helper.setProxy(function () {
-                    //清理缓存 cookie storage登 各种缓存
-                    helper.clearCache(function () {
-                        //关闭之前的旧的所有页面
-                        start(tabids);
-                    });
+    chrome.tabs.query({}, function (tabs) {
+        console.log(tabs)
+        var tabids = [];
+        for (let tab of tabs) {
+            tabids.push(tab.id);
+        }
+        if (tabids.length > 0) {
+            //设置代理
+            helper.setProxy(function () {
+                //清理缓存 cookie storage登 各种缓存
+                helper.clearCache(function () {
+                    //关闭之前的旧的所有页面
+                    start(tabids);
                 });
-            }
-        });
-    } catch (e) {
-        console.log(e)
-        openFlag = 0;   //出错了后让守护进程重试
-    }
+            });
+        }
+    });
 }

@@ -5,6 +5,8 @@ if (typeof chrome == 'undefined') {
     var chrome = browser;
 }
 
+var selectedUa = '';
+
 /**
  * 助手类
  */
@@ -126,6 +128,17 @@ class Helper {
         })
     }
 
+    /**
+     * 监听代理错误
+     * @param callback
+     */
+    onProxyError(callback) {
+        chrome.proxy.onProxyError.addListener(function (detail) {
+            console.log(detail.error);
+            callback();
+        });
+    }
+
     cancelProxy() {
         chrome.proxy.settings.clear({scope: 'regular'});
     }
@@ -178,20 +191,44 @@ class Helper {
     getRandomUA() {
         var ua = [
             //IE
-            {ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; rv:11.0) like Gecko', browser: 'IE'},
-            {ua: 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E)', browser: 'IE'},
-            {ua: 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E)', browser: 'IE'},
-            {ua: 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E)', browser: 'IE'},
+            {
+                ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; rv:11.0) like Gecko',
+                browser: 'IE'
+            },
+            {
+                ua: 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E)',
+                browser: 'IE'
+            },
+            {
+                ua: 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E)',
+                browser: 'IE'
+            },
+            {
+                ua: 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E)',
+                browser: 'IE'
+            },
             //QQ
-            {ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.104 Safari/537.36 Core/1.53.3427.400 QQBrowser/9.6.12201.400', browser: 'QQ'},
+            {
+                ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.104 Safari/537.36 Core/1.53.3427.400 QQBrowser/9.6.12201.400',
+                browser: 'QQ'
+            },
             //chrome
-            {ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36', browser: 'chrome'},
+            {
+                ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36',
+                browser: 'chrome'
+            },
             //firefox
             {ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', browser: 'firefox'},
             //360
-            {ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36', browser: '360'},
+            {
+                ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+                browser: '360'
+            },
             //2345
-            {ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.108 Safari/537.36 2345Explorer/8.8.0.16453', browser: '2345'},
+            {
+                ua: 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.108 Safari/537.36 2345Explorer/8.8.0.16453',
+                browser: '2345'
+            },
         ];
         var os = [
             {version: 'Windows NT 10.0', os: 'Windows 10'},
@@ -218,12 +255,13 @@ class Helper {
      * 设置UA
      */
     setUa() {
-        var ua = this.getRandomUA();
-        chrome.webRequest.onBeforeSendHeaders.addListener(
-            function (details) {
+        chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
+                if (selectedUa == '') {
+                    selectedUa = helper.getRandomUA();
+                }
                 for (var i = 0; i < details.requestHeaders.length; i++) {
                     if (details.requestHeaders[i].name === 'User-Agent' || details.requestHeaders[i].name === 'Cookie') {
-                        details.requestHeaders[i].value = ua;
+                        details.requestHeaders[i].value = selectedUa;
                         break;
                     }
                 }
@@ -233,6 +271,8 @@ class Helper {
             ['blocking', 'requestHeaders']
         )
     }
+
+
 
     /**
      * 随机取数组元素
