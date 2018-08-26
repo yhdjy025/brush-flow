@@ -1,6 +1,6 @@
 //为兼容firefox和chrome
-var getproxy_url = 'https://survey.yhdjy.cn/admin/getproxy';
-var getproxy2_url = 'https://survey.yhdjy.cn/admin/getproxy2';
+var base_url = 'https://survey.yhdjy.cn/brush/';
+var applyTask_url = 'applyTask';
 if (typeof chrome == 'undefined') {
     var chrome = browser;
 }
@@ -47,85 +47,38 @@ class Helper {
     }
 
     /**
-     * 获取代理IP   接口1
-     * @param callback
-     */
-    gettProxy(callback) {
-        this.getStorage('ip_list', function (data) {
-            var url = getproxy_url;
-            $.get(url, function (ret) {
-                if (ret && ret.indexOf(':')) {
-                    if (data.ips && data.ips == ret) {
-                        helper.cancelProxy();
-                        return false;
-                    }
-                    var count = data.count ? data.count + 1 : 1;
-                    helper.setStorage('ip_list', {ips: ret, count: count})
-                    if (typeof callback == 'function') {
-                        var ip = ret.split(':');
-                        callback(ip[0], ip[1]);
-                    }
-                }
-            });
-        });
-    }
-
-    /**
-     * 获取代理IP   接口2
-     * @param callback
-     */
-    gettProxy2(callback) {
-        this.getStorage('ip_list', function (data) {
-            var url = getproxy2_url;
-            $.get(url, function (ret) {
-                if (ret && ret.indexOf(':')) {
-                    if (data.ips && data.ips == ret) {
-                        helper.cancelProxy();
-                        return false;
-                    }
-                    var count = data.count ? data.count + 1 : 1;
-                    helper.setStorage('ip_list', {ips: ret, count: count})
-                    if (typeof callback == 'function') {
-                        var ip = ret.split(':');
-                        callback(ip[0], ip[1]);
-                    }
-                }
-            });
-        });
-    }
-
-
-    /**
      * 设置代理
      * @param callback
      */
-    setProxy(callback) {
+    setProxy(ip, port, callback) {
         helper.cancelProxy();
-        this.gettProxy2(function (ip, port) {
-            var config = {
-                mode: 'fixed_servers',
-                rules: {
-                    proxyForHttp: {
-                        host: ip,
-                        port: Math.floor(port)
-                    },
-                    proxyForHttps: {
-                        host: ip,
-                        port: Math.floor(port)
-                    }
+        var config = {
+            mode: 'fixed_servers',
+            rules: {
+                /*proxyForHttp: {
+                    host: ip,
+                    port: Math.floor(port)
+                },
+                proxyForHttps: {
+                    host: ip,
+                    port: Math.floor(port)
+                },*/
+                singleProxy: {
+                    scheme: 'socks5',
+                    host: ip,
+                    port: Math.floor(port)
                 }
-            };
-            console.log(ip)
-            chrome.proxy.settings.set({
-                value: config,
-                scope: 'regular'
-            }, function () {
-                console.log('>>>>proxy success');
-                if (typeof callback == 'function') {
-                    callback()
-                }
-            });
-        })
+            }
+        };
+        chrome.proxy.settings.set({
+            value: config,
+            scope: 'regular'
+        }, function () {
+            console.log('>>>>proxy success');
+            if (typeof callback == 'function') {
+                callback();
+            }
+        });
     }
 
     /**

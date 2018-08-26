@@ -18,96 +18,15 @@
             </label>
         </li>
         <li class="list-group-item">
-            <label>时间间隔（s）：</label>
-            <input type="text" id="time-interval" class="form-control input-sm" value="30">
+            <input type="text" id="group" name="group" value="" class="form-control input-sm" placeholder="分组标识">
         </li>
-        <li class="list-group-item">
-            当前代理：<span id="show-ip"></span>
-        </li>
-        <li class="list-group-item">
-            代理统计：<span id="count-ip">0</span>
-            <label class="label btn-danger pull-right" id="clear-count">清空</label>
-        </li>
-
-        <li class="list-group-item" id="url-list">
-            <div class="form-group">
-                <label>2345导航</label>
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default btn-sm url-open" type="button">
-                            <i class="glyphicon glyphicon-ok"></i>
-                        </button>
-                      </span>
-                    <input type="text" name="url2345" class="form-control input-sm" placeholder="2345盗号地址">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>7654导航</label>
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default btn-sm url-open" type="button">
-                            <i class="glyphicon glyphicon-ok"></i>
-                        </button>
-                      </span>
-                    <input type="text" name="url7654" class="form-control input-sm" placeholder="7654导航地址">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>QQ装机部落搜狗导航</label>
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default btn-sm url-open" type="button">
-                            <i class="glyphicon glyphicon-ok"></i>
-                        </button>
-                      </span>
-                    <input type="text" name="urlsougou" class="form-control input-sm" placeholder="QQ装机部落搜狗导航地址">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>360导航</label>
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default btn-sm url-open" type="button">
-                            <i class="glyphicon glyphicon-ok"></i>
-                        </button>
-                      </span>
-                    <input type="text" name="url360" class="form-control input-sm" placeholder="360导航地址">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>蓝光联盟hao123导航</label>
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default btn-sm url-open" type="button">
-                            <i class="glyphicon glyphicon-ok"></i>
-                        </button>
-                    </span>
-                    <input type="text" name="urlhao123" class="form-control input-sm" placeholder="蓝光联盟hao123导航地址">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>毒霸导航</label>
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default btn-sm url-open" type="button">
-                            <i class="glyphicon glyphicon-ok"></i>
-                        </button>
-                      </span>
-                    <input type="text" name="urlduba" class="form-control input-sm" placeholder="毒霸导航地址">
-                </div>
-            </div>
-        </li>
-
-        <!--<li class="list-group-item row">
-            <label><input type="radio" name="type" value="qqsoft"> 腾讯软件管理</label>
-            <input type="text" name="qqsofturl" class="form-control input-sm" value="">
-        </li>-->
-
+        <li class="list-group-item" id="url-list"></li>
     </ul>
 </div>
 <script src="../library/js/jquery.min.js"></script>
 <script src="../library/js/bootstrap.min.js"></script>
 <script src="../library/js/layer.js"></script>
 <script src="popup.js"></script>
+<script src="helper.js"></script>
 </body>
 </html>
