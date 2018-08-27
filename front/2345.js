@@ -2,7 +2,7 @@ var times = 0;
 $(function () {
     helper.getStorage('open_flow', function (data) {
         console.log('------------2345------------');
-        if (data.select && data.select == 1 && data.urls.url2345 && data.urls.url2345.open) {
+        if (data.select && data.select == 1) {
             //给70%的转化率
             var isReal = helper.random(0, 10);
             if (isReal <= 3)
