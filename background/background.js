@@ -30,6 +30,7 @@ setInterval(function () {
 
 //获取任务
 function applyTask(data) {
+    helper.cancelProxy();
     $.post(base_url + applyTask_url, {group: data.group}, function (ret) {
         if (1 == ret.status) {
             var task = ret.data;
