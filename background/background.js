@@ -44,7 +44,6 @@ function applyTask(data) {
                             chrome.windows.create({url: v.url});
                         });
                         setTimeout(function () {
-                            console.log(task.time)
                             chrome.tabs.query({}, function (tabs) {
                                 var tabids = [];
                                 for (let tab of tabs) {

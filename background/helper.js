@@ -234,8 +234,6 @@ class Helper {
                     if (rand.bodyWH) {
                         if (details.url.indexOf('pb.sogou.com/pv.gif?') != -1)  {
                             var url = details.url.replace(/mtmvp=.*?\&/, 'mtmvp=' + rand.bodyWH + '&');
-                            console.log(rand.bodyWH);
-                            console.log(url);
                             return {redirectUrl: url};
                         }
                     }
