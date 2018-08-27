@@ -230,11 +230,16 @@ class Helper {
      */
     beforeRequest() {
         chrome.webRequest.onBeforeRequest.addListener(function (details) {
-                if (details.url.indexOf('pb.sogou.com/pv.gif?') != -1)  {
-                    var bodyWH = '1366x768';
-                    var url = details.url.replace(/mtmvp=.*?\&/, 'mtmvp=' + bodyWH + '&');
-                    return {redirectUrl: url};
-                }
+                helper.getStorage('selected_screen', function (rand) {
+                    if (rand.bodyWH) {
+                        if (details.url.indexOf('pb.sogou.com/pv.gif?') != -1)  {
+                            var url = details.url.replace(/mtmvp=.*?\&/, 'mtmvp=' + rand.bodyWH + '&');
+                            console.log(rand.bodyWH);
+                            console.log(url);
+                            return {redirectUrl: url};
+                        }
+                    }
+                });
             },
             {urls: ['<all_urls>']},
             ['blocking']
@@ -252,6 +257,16 @@ class Helper {
     }
 
     /**
+     * 随机数
+     * @param min
+     * @param max
+     * @returns {number}
+     */
+    random(min, max) {
+        return Math.round(min + Math.random() * max);
+    }
+
+    /**
      * 取消下载
      * @param callback
      */
@@ -262,6 +277,37 @@ class Helper {
                 if (typeof callback == 'function') callback();
             })
         });
+    }
+
+    /**
+     * 随机生成分辨率
+     */
+    getScreen() {
+        let screens = [
+            {width: 2560, height: 1080},
+            {width: 2560, height: 1440},
+            {width: 1920, height: 1080},
+            {width: 1600, height: 1200},
+            {width: 1600, height: 900},
+            {width: 1440, height: 900},
+            {width: 1366, height: 768}
+        ];
+        let screenBit = [
+            8, 10, 12, 16, 24, 32
+        ];
+        let rdScreen = this.randomArr(screens);
+        let rdBit = this.randomArr(screenBit);
+        var bwidth = rdScreen.width - helper.random(10, 200);
+        var bheight = rdScreen.height - helper.random(10, 200);
+        var bodyWH = bwidth + 'x' + bheight;
+
+        var rand = {
+            rdScreen: rdScreen,
+            rdBit: rdBit,
+            bodyWH: bodyWH
+        };
+        this.setStorage('selected_screen', rand);
+        return rand;
     }
 
 }

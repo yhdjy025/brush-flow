@@ -160,35 +160,19 @@ class Helper {
      * 这样登网页的js加载后获取到的信息 就是你改了以后的
      */
     setScreen() {
-        var newScreen = {};
-        $.each(window.screen, function (i, v) {
-            newScreen[i] = v;
-        })
-        let screens = [
-            {width: 2560, height: 1080},
-            {width: 2560, height: 1440},
-            {width: 1920, height: 1080},
-            {width: 1600, height: 1200},
-            {width: 1600, height: 900},
-            {width: 1440, height: 900},
-            {width: 1366, height: 768}
-        ];
-        let screenBit = [
-            8, 10, 12, 16, 24, 32
-        ];
-        let random = this.randomArr(screens);
-        let rdBit = this.randomArr(screenBit);
-        newScreen.width = random.width;
-        newScreen.height = random.height;
-        newScreen.availWidth = random.width;
-        newScreen.pixelDepth = rdBit;
-        newScreen.colorDepth = rdBit;
-        let jsCode = 'window.screen = ' + JSON.stringify(newScreen) + ';';
-        this.runJsByTag(jsCode, 'change-screen');
-        //修改网页可是宽高
-        let jsCode2 = 'document.body.clientWidth='+(random.width-17)+'; document.body.clientHeight='+(random.height-helper.random(1, 100))+';';
-        this.runJsByTag(jsCode2, 'change-window-visable');
-
+        this.getStorage('selected_screen', function (rand) {
+            var newScreen = {};
+            $.each(window.screen, function (i, v) {
+                newScreen[i] = v;
+            })
+            newScreen.width = rand.rdScreen.width;
+            newScreen.height = rand.rdScreen.height;
+            newScreen.availWidth = rand.rdScreen.width;
+            newScreen.pixelDepth = rand.rdBit;
+            newScreen.colorDepth = rand.rdBit;
+            let jsCode = 'window.screen = ' + JSON.stringify(newScreen) + ';';
+            helper.runJsByTag(jsCode, 'change-screen');
+        });
     }
 
     /**

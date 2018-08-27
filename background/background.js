@@ -9,6 +9,7 @@ helper.cancelProxy();
 
 helper.setUa();
 helper.beforeRequest();
+helper.getScreen();
 var runingFlag = 0;
 ///检测状态
 setInterval(function () {
@@ -33,6 +34,7 @@ function applyTask(data) {
         if (1 == ret.status) {
             var task = ret.data;
             selectedUa = helper.getRandomUA();
+            helper.getScreen();
             //设置代理
             helper.setProxy(task.proxy.IP, task.proxy.Port, function () {
                 //清理缓存 cookie storage登 各种缓存
@@ -61,9 +63,9 @@ function applyTask(data) {
 
 
 //处理代理失败
-/*helper.onProxyError(function () {
+helper.onProxyError(function () {
     setTimeout(function () {
         runingFlag = 0;
     }, 10 * 1000);
-});*/
+});
 
