@@ -31,34 +31,45 @@ setInterval(function () {
 //获取任务
 function applyTask(data) {
     helper.cancelProxy();
-    $.post(base_url + applyTask_url, {group: data.group}, function (ret) {
-        if (1 == ret.status) {
-            var task = ret.data;
-            selectedUa = helper.getRandomUA();
-            helper.getScreen();
-            //设置代理
-            helper.setProxy(task.proxy.IP, task.proxy.Port, function () {
-                //清理缓存 cookie storage登 各种缓存
-                helper.clearCache(function () {
-                    setTimeout(function () {
-                        $.each(task.urls, function (i, v) {
-                            chrome.windows.create({url: v.url});
-                        });
+    $.ajax({
+        type: 'POST',
+        url: base_url + applyTask_url,
+        data: {group: data.group},
+        dataType: 'json',
+        success: function (ret) {
+            if (1 == ret.status) {
+                var task = ret.data;
+                selectedUa = helper.getRandomUA();
+                helper.getScreen();
+                //设置代理
+                helper.setProxy(task.proxy.IP, task.proxy.Port, function () {
+                    //清理缓存 cookie storage登 各种缓存
+                    helper.clearCache(function () {
                         setTimeout(function () {
-                            chrome.tabs.query({}, function (tabs) {
-                                var tabids = [];
-                                for (let tab of tabs) {
-                                    tabids.push(tab.id);
-                                }
-                                chrome.tabs.remove(tabids);
-                                runingFlag = 0;
+                            $.each(task.urls, function (i, v) {
+                                chrome.windows.create({url: v.url});
                             });
-                        }, task.time * 1000);
-                    }, 1000);
+                            setTimeout(function () {
+                                chrome.tabs.query({}, function (tabs) {
+                                    var tabids = [];
+                                    for (let tab of tabs) {
+                                        tabids.push(tab.id);
+                                    }
+                                    chrome.tabs.remove(tabids);
+                                    runingFlag = 0;
+                                });
+                            }, task.time * 1000);
+                        }, 1000);
+                    });
                 });
-            });
+            }
+        },
+        error: function (ret) {
+            setTimeout(function () {
+                runingFlag = 0;
+            }, 20 * 1000);
         }
-    });
+    })
 }
 
 
