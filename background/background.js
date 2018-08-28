@@ -47,24 +47,24 @@ function applyTask(data) {
                 helper.setProxy(task.proxy.IP, task.proxy.Port, function () {
                     proxyFlag = 1;
                     //清理缓存 cookie storage登 各种缓存
-                    //helper.clearCache(function () {
-                    setTimeout(function () {
-                        $.each(task.urls, function (i, v) {
-                            chrome.windows.create({url: v.url});
-                        });
-                        //检测代理是否失效
-                        var timer = setInterval(function () {
-                            var timestrap = Date.parse(new Date()) / 1000;
-                            if (timestrap > task.proxy.ExpireTimeStramp) {
-                                clearInterval(timer);
-                                closeAllTabs(false);
-                            }
-                        }, 1000)
+                    helper.clearCache(function () {
                         setTimeout(function () {
-                            closeAllTabs(true);
-                        }, task.time * 1000);
-                    }, 1000);
-                    //});
+                            $.each(task.urls, function (i, v) {
+                                chrome.windows.create({url: v.url});
+                            });
+                            //检测代理是否失效
+                            var timer = setInterval(function () {
+                                var timestrap = Date.parse(new Date()) / 1000;
+                                if (timestrap > task.proxy.ExpireTimeStramp) {
+                                    clearInterval(timer);
+                                    closeAllTabs(false);
+                                }
+                            }, 1000)
+                            setTimeout(function () {
+                                closeAllTabs(true);
+                            }, task.time * 1000);
+                        }, 1000);
+                    });
                 });
             }
         },
