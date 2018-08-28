@@ -53,16 +53,18 @@ function applyTask(data) {
                                 chrome.windows.create({url: v.url});
                             });
                             //检测代理是否失效
+                            var closrAllFlag = 0;
                             var timer = setInterval(function () {
                                 var timestrap = Date.parse(new Date()) / 1000;
-                                if (timestrap > task.proxy.ExpireTimeStramp) {
-                                    clearInterval(timer);
+                                if (timestrap > task.proxy.ExpireTimeStramp && closrAllFlag == 0) {
                                     closeAllTabs(false);
+                                    closrAllFlag = 1;
+                                }
+                                if (timestrap > task.time) {
+                                    closeAllTabs(true);
+                                    clearInterval(timer);
                                 }
                             }, 1000)
-                            setTimeout(function () {
-                                closeAllTabs(true);
-                            }, task.time * 1000);
                         }, 1000);
                     });
                 });
