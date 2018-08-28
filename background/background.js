@@ -10,7 +10,8 @@ helper.cancelProxy();
 helper.setUa();
 helper.beforeRequest();
 helper.getScreen();
-var runingFlag = 0;
+var runingFlag = 0;     //正在刷标志
+var proxyFlag = 0;      //代理标志
 ///检测状态
 setInterval(function () {
     helper.getStorage('open_flow', function (data) {
@@ -31,7 +32,8 @@ setInterval(function () {
 //获取任务
 function applyTask(data) {
     helper.cancelProxy();
-    $.ajax({
+    proxyFlag = 0;
+    $.ajax({            //请求任务
         type: 'POST',
         url: base_url + applyTask_url,
         data: {group: data.group},
@@ -43,30 +45,33 @@ function applyTask(data) {
                 helper.getScreen();
                 //设置代理
                 helper.setProxy(task.proxy.IP, task.proxy.Port, function () {
+                    proxyFlag = 1;
                     //清理缓存 cookie storage登 各种缓存
-                    helper.clearCache(function () {
+                    //helper.clearCache(function () {
+                    setTimeout(function () {
+                        $.each(task.urls, function (i, v) {
+                            chrome.windows.create({url: v.url});
+                        });
+                        //检测代理是否失效
+                        var timer = setInterval(function () {
+                            var timestrap = Date.parse(new Date()) / 1000;
+                            if (timestrap > task.proxy.ExpireTimeStramp) {
+                                clearInterval(timer);
+                                closeAllTabs(false);
+                            }
+                        }, 1000)
                         setTimeout(function () {
-                            $.each(task.urls, function (i, v) {
-                                chrome.windows.create({url: v.url});
-                            });
-                            setTimeout(function () {
-                                chrome.tabs.query({}, function (tabs) {
-                                    var tabids = [];
-                                    for (let tab of tabs) {
-                                        tabids.push(tab.id);
-                                    }
-                                    chrome.tabs.remove(tabids);
-                                    runingFlag = 0;
-                                });
-                            }, task.time * 1000);
-                        }, 1000);
-                    });
+                            closeAllTabs(true);
+                        }, task.time * 1000);
+                    }, 1000);
+                    //});
                 });
             }
         },
         error: function (ret) {
+            console.log('-----------post error---------------');
             setTimeout(function () {
-                runingFlag = 0;
+                closeAllTabs(true);
             }, 20 * 1000);
         }
     })
@@ -75,8 +80,28 @@ function applyTask(data) {
 
 //处理代理失败
 helper.onProxyError(function () {
-    setTimeout(function () {
-        runingFlag = 0;
-    }, 10 * 1000);
+    if (0 == proxyFlag) {
+        console.log('-----------proxy error---------------');
+        setTimeout(function () {
+            closeAllTabs(true);
+        }, 20 * 1000);
+    }
 });
+
+//关闭所有窗口
+function closeAllTabs(reBrush) {
+    chrome.tabs.query({}, function (tabs) {
+        var tabids = [];
+        for (let tab of tabs) {
+            tabids.push(tab.id);
+        }
+        if (tabids.length > 0) {
+            chrome.tabs.remove(tabids);
+        }
+
+        if (true == reBrush) {
+            runingFlag = 0;
+        }
+    });
+}
 
