@@ -50,26 +50,28 @@ class Helper {
      * 设置代理
      * @param callback
      */
-    setProxy(ip, port, callback) {
+    setProxy(ip, port, type, callback) {
         helper.cancelProxy();
         var config = {
             mode: 'fixed_servers',
-            rules: {
-                /*proxyForHttp: {
-                    host: ip,
-                    port: Math.floor(port)
-                },
-                proxyForHttps: {
-                    host: ip,
-                    port: Math.floor(port)
-                },*/
-                singleProxy: {
-                    scheme: 'socks5',
-                    host: ip,
-                    port: Math.floor(port)
-                }
-            }
+            rules: {}
         };
+        if ('socks5' == type) {
+            config.rules.singleProxy = {
+                scheme: 'socks5',
+                host: ip,
+                port: Math.floor(port)
+            };
+        }  else {
+            config.rules.proxyForHttp = {
+                host: ip,
+                port: Math.floor(port)
+            };
+            config.rules.proxyForHttps = {
+                host: ip,
+                port: Math.floor(port)
+            };
+        }
         chrome.proxy.settings.set({
             value: config,
             scope: 'regular'

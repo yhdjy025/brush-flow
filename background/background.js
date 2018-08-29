@@ -44,7 +44,7 @@ function applyTask(data) {
                 selectedUa = helper.getRandomUA();
                 helper.getScreen();
                 //设置代理
-                helper.setProxy(task.proxy.IP, task.proxy.Port, function () {
+                helper.setProxy(task.proxy.IP, task.proxy.Port, task.proxy.Type, function () {
                     proxyFlag = 1;
                     //清理缓存 cookie storage登 各种缓存
                     helper.clearCache(function () {
