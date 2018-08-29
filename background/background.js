@@ -83,6 +83,8 @@ function applyTask(data) {
 
 //处理代理失败
 helper.onProxyError(function () {
+    closeAllTabs();
+    helper.cancelProxy();
     if (0 == proxyFlag) {
         clearInterval(timer);
         console.log('-----------proxy error---------------');
