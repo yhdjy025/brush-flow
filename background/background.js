@@ -65,6 +65,7 @@ function applyTask(data) {
             }
         },
         error: function (ret) {
+            console.log('----------post error----------')
             setTimeout(function () {
                 runingFlag = 0;
             }, 20 * 1000);
