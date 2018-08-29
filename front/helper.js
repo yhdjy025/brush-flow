@@ -1,6 +1,6 @@
 //为兼容firefox和chrome
-var getip_url = 'https://survey.yhdjy.cn/admin/getip';
-var getKeywords_url = 'https://survey.yhdjy.cn/admin/getKeywords';
+var getip_url = 'https://survey.yhdjy.cn/brush/getip';
+var getKeywords_url = 'https://survey.yhdjy.cn/brush/getKeywords';
 if (typeof chrome == 'undefined') {
     var chrome = browser;
 }
