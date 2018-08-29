@@ -12,6 +12,7 @@ helper.beforeRequest();
 helper.getScreen();
 var runingFlag = 0;     //正在刷标志
 var proxyFlag = 0;      //代理标志
+var timer = null;
 ///检测状态
 setInterval(function () {
     helper.getStorage('open_flow', function (data) {
@@ -54,7 +55,7 @@ function applyTask(data) {
                             });
                             //检测代理是否失效
                             var closrAllFlag = 0;
-                            var timer = setInterval(function () {
+                            timer = setInterval(function () {
                                 var timestrap = Date.parse(new Date()) / 1000;
                                 if (timestrap > task.proxy.ExpireTimeStramp && closrAllFlag == 0) {
                                     closeAllTabs(false);
@@ -83,6 +84,7 @@ function applyTask(data) {
 //处理代理失败
 helper.onProxyError(function () {
     if (0 == proxyFlag) {
+        clearInterval(timer);
         console.log('-----------proxy error---------------');
         setTimeout(function () {
             closeAllTabs(true);
