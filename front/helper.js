@@ -170,9 +170,15 @@ class Helper {
             newScreen.pixelDepth = rand.rdBit;
             newScreen.colorDepth = rand.rdBit;
             var jsCode = 'window.screen = ' + JSON.stringify(newScreen) + ';';
-            jsCode += 'redefineProperties(document.body, {clientHeight: {value:'+rand.bodyWH.height
-                +'}, clientWidth: {value:'+rand.bodyWH.width+'}});'
             helper.runJsByTag(jsCode, 'change-screen');
+            var jsCode = 'redefineProperties(document.body, {clientHeight: {value:'+rand.bodyWH.height
+                +'}, clientWidth: {value:'+rand.bodyWH.width+'}});';
+            var bodyset = setInterval(function () {
+                if (document.body) {
+                    helper.runJsByTag(jsCode, 'change-bodyWG');
+                    clearInterval(bodyset);
+                }
+            }, 1)
         });
     }
 
@@ -191,7 +197,13 @@ class Helper {
      * 因为 插件js是不能直接调用网页的js的 所以这里通过页面插入一个元素调用js
      */
     runJsByTag(jsCode, id) {
+        $('#'+id).remove();
+        var oldtag = document.getElementById(id);
+        /*if (oldtag.length > 0) {
+            oldtag.remove();
+        }*/
         var tag = document.createElement('script');
+        tag.id = id;
         tag.innerHTML = jsCode;
         document.documentElement.appendChild(tag)
     }
@@ -252,7 +264,7 @@ class Helper {
 }
 
 var helper = new Helper();
-helper.runJsByTag("var redefineProperties = Object.defineProperties;")
+helper.runJsByTag("var redefineProperties = Object.defineProperties;");
 //更改分辨率
 helper.setUa();
 helper.setScreen();
