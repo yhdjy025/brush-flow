@@ -62,8 +62,8 @@ function applyTask(data) {
                                     closrAllFlag = 1;
                                 }
                                 if (timestrap > task.time) {
-                                    closeAllTabs(true);
                                     clearInterval(timer);
+                                    closeAllTabs(true);
                                 }
                             }, 1000)
                         }, 1000);
@@ -83,11 +83,11 @@ function applyTask(data) {
 
 //处理代理失败
 helper.onProxyError(function () {
+    console.log('-----------proxy error---------------');
     closeAllTabs();
     helper.cancelProxy();
     if (0 == proxyFlag) {
         clearInterval(timer);
-        console.log('-----------proxy error---------------');
         setTimeout(function () {
             closeAllTabs(true);
         }, 20 * 1000);
