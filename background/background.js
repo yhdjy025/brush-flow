@@ -5,11 +5,6 @@
  */
 'use strict';
 //取消代理
-helper.cancelProxy();
-
-helper.setUa();
-helper.beforeRequest();
-helper.getScreen();
 var runingFlag = 0;     //正在刷标志
 var proxyFlag = 0;      //代理标志
 var timer = null;
@@ -43,7 +38,7 @@ function applyTask(data) {
             if (1 == ret.status) {
                 var task = ret.data;
                 selectedUa = helper.getRandomUA();
-                helper.getScreen();
+                selectedScreen = helper.getScreen();
                 //设置代理
                 helper.setProxy(task.proxy.IP, task.proxy.Port, task.proxy.Type, function () {
                     proxyFlag = 1;
@@ -51,7 +46,11 @@ function applyTask(data) {
                     helper.clearCache(function () {
                         setTimeout(function () {
                             $.each(task.urls, function (i, v) {
-                                chrome.windows.create({url: v.url});
+                                chrome.windows.create({
+                                        url: v.url,
+                                        width: selectedScreen.bodyWH.width,
+                                        height: selectedScreen.bodyWH.height
+                                    });
                             });
                             //检测代理是否失效
                             var closrAllFlag = 0;

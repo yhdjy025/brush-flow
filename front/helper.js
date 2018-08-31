@@ -161,6 +161,7 @@ class Helper {
      */
     setScreen() {
         this.getStorage('selected_screen', function (rand) {
+            console.log(rand)
             var newScreen = {};
             $.each(window.screen, function (i, v) {
                 newScreen[i] = v;

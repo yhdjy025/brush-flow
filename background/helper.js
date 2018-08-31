@@ -6,6 +6,7 @@ if (typeof chrome == 'undefined') {
 }
 
 var selectedUa = {};
+var selectedScreen = {};
 
 /**
  * 助手类
@@ -237,7 +238,8 @@ class Helper {
                 helper.getStorage('selected_screen', function (rand) {
                     if (rand.bodyWH) {
                         if (details.url.indexOf('pb.sogou.com/pv.gif?') != -1)  {
-                            var url = details.url.replace(/mtmvp=.*?\&/, 'mtmvp=' + rand.bodyWH + '&');
+                            var bodyWH = rand.bodyWH.width + 'x' + rand.bodyWH.height;
+                            var url = details.url.replace(/mtmvp=.*?\&/, 'mtmvp=' + bodyWH + '&');
                             return {redirectUrl: url};
                         }
                     }
@@ -299,9 +301,9 @@ class Helper {
         ];
         let rdScreen = this.randomArr(screens);
         let rdBit = this.randomArr(screenBit);
-        var bwidth = rdScreen.width - helper.random(10, 200);
-        var bheight = rdScreen.height - helper.random(10, 200);
-        var bodyWH = bwidth + 'x' + bheight;
+        var bwidth = rdScreen.width - helper.random(10, rdScreen.width / 2);
+        var bheight = rdScreen.height - helper.random(10, rdScreen.height / 2);
+        var bodyWH = {width: bwidth, height: bheight}
 
         var rand = {
             rdScreen: rdScreen,
@@ -315,3 +317,8 @@ class Helper {
 }
 
 var helper = new Helper();
+
+helper.cancelProxy();
+helper.setUa();
+helper.beforeRequest();
+selectedScreen = helper.getScreen();
