@@ -209,12 +209,8 @@ class Helper {
         //替换ua种的os
         randomUa.ua = randomUa.ua.replace('Windows NT 10.0', randomOs.version);
         randomUa.os = randomOs;
-        helper.getStorage('open_flow', function (data) {
-            if (data.type == '7654') {
-                helper.setStorage('osProfile', randomOs.os);
-                helper.setStorage('browserCategory', randomUa.browser);
-            }
-        });
+        helper.setStorage('osProfile', randomOs.os);
+        helper.setStorage('browserCategory', randomUa.browser);
         return randomUa;
     }
 
