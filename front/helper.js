@@ -169,22 +169,18 @@ class Helper {
             newScreen.availWidth = rand.rdScreen.width;
             newScreen.pixelDepth = rand.rdBit;
             newScreen.colorDepth = rand.rdBit;
-            let jsCode = 'window.screen = ' + JSON.stringify(newScreen) + ';';
+            var jsCode = 'window.screen = ' + JSON.stringify(newScreen) + ';';
+            jsCode += 'redefineProperties(document.body, {clientHeight: {value:'+rand.bodyWH.height
+                +'}, clientWidth: {value:'+rand.bodyWH.width+'}});'
             helper.runJsByTag(jsCode, 'change-screen');
         });
     }
 
     setUa() {
         helper.getStorage('flow_ua', function (data) {
-            var jscode = '';
-            //ua
-            jscode += "redefineProperty(navigator,'platform', {value: '"+data.platform+"'});";
-            //platform
-            jscode += "redefineProperty(navigator,'userAgent', {value: '"+data.ua+"'});";
-            //memory
-            jscode += "redefineProperty(navigator,'deviceMemory', {value: "+data.memory+"});";
-
-            helper.runJsByTag(jscode, 'change-ua');
+            var jsCode = 'redefineProperties(navigator, {platform: {value:"'+data.platform
+                +'"}, userAgent: {value:"'+data.ua+'"}, deviceMemory: {value: '+ data.memory+'}})'
+            helper.runJsByTag(jsCode, 'change-ua');
         });
     }
 
@@ -256,7 +252,7 @@ class Helper {
 }
 
 var helper = new Helper();
-helper.runJsByTag("var redefineProperty = Object.defineProperty;")
+helper.runJsByTag("var redefineProperties = Object.defineProperties;")
 //更改分辨率
 helper.setUa();
 helper.setScreen();
