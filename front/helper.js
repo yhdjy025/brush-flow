@@ -175,6 +175,19 @@ class Helper {
         });
     }
 
+    setUa() {
+        helper.getStorage('flow_ua', function (data) {
+            var jscode = '';
+            //ua
+            jscode += "Object.defineProperty(navigator,'platform', {value: '"+data.platform+"'});";
+            //platform
+            jscode += "Object.defineProperty(navigator,'userAgent', {value: '"+data.ua+"'});";
+            //memory
+            jscode += "Object.defineProperty(navigator,'deviceMemory', {value: "+data.memory+"});";
+            helper.runJsByTag(jscode, 'change-ua');
+        });
+    }
+
     /**
      * 运行js
      * @param jsCode
@@ -250,3 +263,4 @@ class Helper {
 var helper = new Helper();
 //更改分辨率
 helper.setScreen();
+helper.setUa();

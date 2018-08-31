@@ -1,12 +1,12 @@
 var times = 0;
+//取时间间隔
 $(function () {
     helper.getStorage('open_flow', function (data) {
         console.log('------------7654------------');
         //更改系统类型
         changeOsType();
-        //更改浏览器
+//更改浏览器
         changeBrowser();
-        //取时间间隔
         if (data.select && data.select == 1) {
             //给70%的转化率
             var isReal = helper.random(0, 10);
@@ -19,19 +19,20 @@ $(function () {
 
 
 function changeOsType() {
-    helper.getStorage('osProfile', function (data) {
-        var jsCode = 'GLOBAL.Util.getOsType = function(){return "' + data.osProfile + '"};';
+    helper.getStorage('flow_ua', function (data) {
+        var jsCode = 'GLOBAL.Util.getOsType = function(){return "' + data.os.os + '"};';
+        console.log(jsCode)
         helper.runJsByTag(jsCode, 'change-os');
     });
 }
 
 function changeBrowser() {
-    helper.getStorage('browserCategory', function (data) {
-        var jsCode = 'GLOBAL.Util.getBrowserType = function(){return "' + data.browserCategory + '"};';
+    helper.getStorage('flow_ua', function (data) {
+        var jsCode = 'GLOBAL.Util.getBrowserType = function(){return "' + data.browser + '"};';
+        console.log(jsCode)
         helper.runJsByTag(jsCode, 'change-broswer');
     })
 }
-
 
 /**
  * 持续点击操作
