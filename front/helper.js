@@ -4,7 +4,6 @@ var getKeywords_url = 'https://survey.yhdjy.cn/brush/getKeywords';
 if (typeof chrome == 'undefined') {
     var chrome = browser;
 }
-
 /**
  * 助手类
  */
@@ -161,7 +160,6 @@ class Helper {
      */
     setScreen() {
         this.getStorage('selected_screen', function (rand) {
-            console.log(rand)
             var newScreen = {};
             $.each(window.screen, function (i, v) {
                 newScreen[i] = v;
@@ -180,11 +178,12 @@ class Helper {
         helper.getStorage('flow_ua', function (data) {
             var jscode = '';
             //ua
-            jscode += "Object.defineProperty(navigator,'platform', {value: '"+data.platform+"'});";
+            jscode += "redefineProperty(navigator,'platform', {value: '"+data.platform+"'});";
             //platform
-            jscode += "Object.defineProperty(navigator,'userAgent', {value: '"+data.ua+"'});";
+            jscode += "redefineProperty(navigator,'userAgent', {value: '"+data.ua+"'});";
             //memory
-            jscode += "Object.defineProperty(navigator,'deviceMemory', {value: "+data.memory+"});";
+            jscode += "redefineProperty(navigator,'deviceMemory', {value: "+data.memory+"});";
+
             helper.runJsByTag(jscode, 'change-ua');
         });
     }
@@ -196,14 +195,9 @@ class Helper {
      * 因为 插件js是不能直接调用网页的js的 所以这里通过页面插入一个元素调用js
      */
     runJsByTag(jsCode, id) {
-        var interval = setInterval(function () {
-            if ($('head').length > 0) {
-                $('head').find('#' + id).remove();
-                var tag = '<script id="'+id+'">'+jsCode+'</script>';
-                $('head').append(tag);
-                clearInterval(interval);
-            }
-        }, 1);
+        var tag = document.createElement('script');
+        tag.innerHTML = jsCode;
+        document.documentElement.appendChild(tag)
     }
 
     /**
@@ -262,6 +256,7 @@ class Helper {
 }
 
 var helper = new Helper();
+helper.runJsByTag("var redefineProperty = Object.defineProperty;")
 //更改分辨率
-helper.setScreen();
 helper.setUa();
+helper.setScreen();
