@@ -37,21 +37,29 @@ function applyTask(data) {
         success: function (ret) {
             if (1 == ret.status) {
                 var task = ret.data;
-                selectedUa = helper.getRandomUA();
-                selectedScreen = helper.getScreen();
+                try {
+                    selectedUa = helper.getRandomUA();
+                    selectedScreen = helper.getScreen();
+                } catch (e) {
+                    console.log('set ua and screen error' + e.toString());
+                }
                 //设置代理
                 helper.setProxy(task.proxy.IP, task.proxy.Port, task.proxy.Type, function () {
                     proxyFlag = 1;
                     //清理缓存 cookie storage登 各种缓存
                     helper.clearCache(function () {
                         setTimeout(function () {
-                            $.each(task.urls, function (i, v) {
-                                chrome.windows.create({
-                                        url: v.url,
-                                        width: selectedScreen.bodyWH.width,
-                                        height: selectedScreen.bodyWH.height
-                                    });
-                            });
+                            try {
+                                $.each(task.urls, function (i, v) {
+                                    chrome.windows.create({
+                                            url: v.url,
+                                            width: selectedScreen.bodyWH.width,
+                                            height: selectedScreen.bodyWH.height
+                                        });
+                                });
+                            } catch (e) {
+                                console.log('create tab error' + e.toString());
+                            }
                             //检测代理是否失效
                             var closrAllFlag = 0;
                             timer = setInterval(function () {
@@ -101,7 +109,11 @@ function closeAllTabs(reBrush) {
             tabids.push(tab.id);
         }
         if (tabids.length > 0) {
-            chrome.tabs.remove(tabids);
+            try {
+                chrome.tabs.remove(tabids);
+            } catch (e) {
+                console.log('close table error' + e.toString());
+            }
         }
 
         if (true == reBrush) {

@@ -96,7 +96,11 @@ class Helper {
     }
 
     cancelProxy() {
-        chrome.proxy.settings.clear({scope: 'regular'});
+        try {
+            chrome.proxy.settings.clear({scope: 'regular'});
+        } catch (e) {
+            console.log('cancel proxy error' + e.toString());
+        }
     }
 
     /**
