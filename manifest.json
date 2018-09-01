@@ -57,6 +57,14 @@
       ],
       "all_frames": true,
       "run_at": "document_end"
+    },
+    {
+      "matches": ["*://hao.360.cn/?src*"],
+      "js": [
+        "front/360.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_end"
     }
   ],
   "browser_action": {
