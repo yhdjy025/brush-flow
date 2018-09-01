@@ -51,6 +51,7 @@ function continueClick() {
         }  else {
             //搜索
             helper.randomKeywords(function (ret) {
+                console.log(ret)
                 $('#J_search_input').val(ret);
                 setTimeout(function () {
                     document.getElementById('J_search_submit_btn').click();
