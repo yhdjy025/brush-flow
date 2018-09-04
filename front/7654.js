@@ -59,6 +59,7 @@ function continueClick() {
             });
         }
         //调用自己实现循环
+
         continueClick();
     }, helper.random(0, 20) * 1000)
 }

@@ -14,7 +14,6 @@ setInterval(function () {
         if (data.select == 1) {
             if (runingFlag == 0) {    //如果未启动
                 console.log('----------start--------');
-                runingFlag = 1;
                 applyTask(data);
             }
         } else if (runingFlag == 1 && data.select != 1) {
@@ -27,7 +26,9 @@ setInterval(function () {
 
 //获取任务
 function applyTask(data) {
+    if (runingFlag == 1) return false;
     helper.cancelProxy();
+    runingFlag = 1;
     proxyFlag = 0;
     $.ajax({            //请求任务
         type: 'POST',
@@ -91,7 +92,7 @@ function applyTask(data) {
 //处理代理失败
 helper.onProxyError(function () {
     console.log('-----------proxy error---------------');
-    closeAllTabs();
+    closeAllTabs(false);
     helper.cancelProxy();
     if (0 == proxyFlag) {
         clearInterval(timer);
