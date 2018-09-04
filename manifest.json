@@ -65,6 +65,14 @@
       ],
       "all_frames": true,
       "run_at": "document_end"
+    },
+    {
+      "matches": ["*://www.duba.com/*"],
+      "js": [
+        "front/duba.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_end"
     }
   ],
   "browser_action": {
