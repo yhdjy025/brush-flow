@@ -38,45 +38,56 @@ function applyTask(data) {
         success: function (ret) {
             if (1 == ret.status) {
                 var task = ret.data;
-                try {
-                    selectedUa = helper.getRandomUA();
-                    selectedScreen = helper.getScreen();
-                } catch (e) {
-                    console.log('set ua and screen error' + e.toString());
-                }
-                //设置代理
-                helper.setProxy(task.proxy.IP, task.proxy.Port, task.proxy.Type, function () {
-                    proxyFlag = 1;
-                    //清理缓存 cookie storage登 各种缓存
-                    helper.clearCache(function () {
-                        setTimeout(function () {
-                            try {
-                                $.each(task.urls, function (i, v) {
-                                    chrome.windows.create({
-                                            url: v.url,
-                                            width: selectedScreen.bodyWH.width,
-                                            height: selectedScreen.bodyWH.height
-                                        });
-                                });
-                            } catch (e) {
-                                console.log('create tab error' + e.toString());
-                            }
-                            //检测代理是否失效
-                            var closrAllFlag = 0;
-                            timer = setInterval(function () {
-                                var timestrap = Date.parse(new Date()) / 1000;
-                                if (timestrap > task.proxy.ExpireTimeStramp && closrAllFlag == 0) {
-                                    closeAllTabs(false);
-                                    closrAllFlag = 1;
+                //休眠
+                if (task.type == 'sleep') {
+                    timer = setInterval(function () {
+                        var timestrap = Date.parse(new Date()) / 1000;
+                        if (timestrap > task.time) {
+                            clearInterval(timer);
+                            closeAllTabs(true);
+                        }
+                    }, 1000)
+                } else {
+                    try {
+                        selectedUa = helper.getRandomUA();
+                        selectedScreen = helper.getScreen();
+                    } catch (e) {
+                        console.log('set ua and screen error' + e.toString());
+                    }
+                    //设置代理
+                    helper.setProxy(task.proxy.IP, task.proxy.Port, task.proxy.Type, function () {
+                        proxyFlag = 1;
+                        //清理缓存 cookie storage登 各种缓存
+                        helper.clearCache(function () {
+                            setTimeout(function () {
+                                try {
+                                    $.each(task.urls, function (i, v) {
+                                        chrome.windows.create({
+                                                url: v.url,
+                                                width: selectedScreen.bodyWH.width,
+                                                height: selectedScreen.bodyWH.height
+                                            });
+                                    });
+                                } catch (e) {
+                                    console.log('create tab error' + e.toString());
                                 }
-                                if (timestrap > task.time) {
-                                    clearInterval(timer);
-                                    closeAllTabs(true);
-                                }
-                            }, 1000)
-                        }, 1000);
+                                //检测代理是否失效
+                                var closrAllFlag = 0;
+                                timer = setInterval(function () {
+                                    var timestrap = Date.parse(new Date()) / 1000;
+                                    if (timestrap > task.proxy.ExpireTimeStramp && closrAllFlag == 0) {
+                                        closeAllTabs(false);
+                                        closrAllFlag = 1;
+                                    }
+                                    if (timestrap > task.time) {
+                                        clearInterval(timer);
+                                        closeAllTabs(true);
+                                    }
+                                }, 1000)
+                            }, 1000);
+                        });
                     });
-                });
+                }
             }
         },
         error: function (ret) {
