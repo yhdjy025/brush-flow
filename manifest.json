@@ -43,7 +43,7 @@
       "run_at": "document_end"
     },
     {
-      "matches": ["*://2345.com/*"],
+      "matches": ["*://www.2345.com/*"],
       "js": [
         "front/2345.js"
       ],
