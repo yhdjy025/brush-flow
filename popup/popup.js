@@ -16,14 +16,17 @@ $(function () {
         if (data.select == 1) {
             $('#open-flow').attr('checked', true);
         }
-        $('#group').val(data.group ? data.group : 'group1');
+        var group = data.group ? data.group : 'group1';
+        $('#group').val(group);
+
+        $.get(base_url + getAllUrls_url + '?group=' + group, function (ret) {
+            if (1 == ret.status) {
+                $('#url-list').html(ret.data);
+            }
+        })
     })
-    
-    $.get(base_url + getAllUrls_url, function (ret) {
-        if (1 == ret.status) {
-            $('#url-list').html(ret.data);
-        }
-    })
+
+
 
     //更改设置
     $('#open-flow,#group').on('change', function () {
