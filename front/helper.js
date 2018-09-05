@@ -171,10 +171,14 @@ class Helper {
             newScreen.colorDepth = rand.rdBit;
             var jsCode = 'window.screen = ' + JSON.stringify(newScreen) + ';';
             helper.runJsByTag(jsCode, 'change-screen');
-            var jsCode = 'redefineProperties(document.body, {clientHeight: {value:'+rand.bodyWH.height
-                +'}, clientWidth: {value:'+rand.bodyWH.width+'}});';
             var bodyset = setInterval(function () {
                 if (document.body) {
+                    var bodyWH = rand.bodyWH;
+                    var offsetWidth = bodyWH.width + document.body.offsetWidth - document.body.clientWidth;
+                    var offsetHeight = bodyWH.height + document.body.offsetHeight - document.body.clientHeight;
+                    var jsCode = 'redefineProperties(document.body, {clientHeight: {value:'+bodyWH.height
+                        +'}, clientWidth: {value:'+bodyWH.width+'}, offsetWidth: {value:'+offsetWidth
+                        +'}, offsetHeight: {value:'+offsetHeight+'}});';
                     helper.runJsByTag(jsCode, 'change-bodyWG');
                     clearInterval(bodyset);
                 }
