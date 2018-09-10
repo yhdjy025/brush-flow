@@ -43,14 +43,6 @@
       "run_at": "document_end"
     },
     {
-      "matches": ["*://www.2345.com/*"],
-      "js": [
-        "front/2345.js"
-      ],
-      "all_frames": true,
-      "run_at": "document_end"
-    },
-    {
       "matches": ["*://123.sogou.com/*"],
       "js": [
         "front/sougou.js"

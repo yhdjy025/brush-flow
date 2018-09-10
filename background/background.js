@@ -14,6 +14,7 @@ setInterval(function () {
         if (data.select == 1) {
             if (runingFlag == 0) {    //如果未启动
                 console.log('----------start--------');
+                clearInterval(timer);
                 applyTask(data);
             }
         } else if (runingFlag == 1 && data.select != 1) {
@@ -28,7 +29,6 @@ setInterval(function () {
 function applyTask(data) {
     if (runingFlag == 1) return false;
     helper.cancelProxy();
-    clearInterval(timer);
     runingFlag = 1;
     proxyFlag = 0;
     $.ajax({            //请求任务
@@ -43,7 +43,8 @@ function applyTask(data) {
                 if (task.type == 'sleep') {
                     timer = setInterval(function () {
                         var timestrap = Date.parse(new Date()) / 1000;
-                        if (timestrap > task.time) {
+                        var sub = timestrap - task.time;
+                        if (timestrap > task.time && sub > task.seconds) {
                             clearInterval(timer);
                             closeAllTabs(true);
                         }
@@ -80,12 +81,13 @@ function applyTask(data) {
                                         closeAllTabs(false);
                                         closrAllFlag = 1;
                                     }
-                                    if (timestrap > task.time) {
+                                    var sub = timestrap - task.time;
+                                    if (timestrap > task.time && sub > task.seconds) {
                                         clearInterval(timer);
                                         closeAllTabs(true);
                                     }
                                 }, 1000)
-                            }, 1000);
+                            }, 3000);
                         });
                     });
                 }
