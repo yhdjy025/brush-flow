@@ -28,6 +28,7 @@ setInterval(function () {
 function applyTask(data) {
     if (runingFlag == 1) return false;
     helper.cancelProxy();
+    clearInterval(timer);
     runingFlag = 1;
     proxyFlag = 0;
     $.ajax({            //请求任务
