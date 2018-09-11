@@ -41,9 +41,10 @@ function applyTask(data) {
                 var task = ret.data;
                 //休眠
                 if (task.type == 'sleep') {
+                    var startTime = Date.parse(new Date()) / 1000;
                     timer = setInterval(function () {
                         var timestrap = Date.parse(new Date()) / 1000;
-                        var sub = timestrap - task.time;
+                        var sub = startTime - task.time;
                         if (timestrap > task.time && sub > task.seconds) {
                             clearInterval(timer);
                             closeAllTabs(true);
@@ -75,13 +76,14 @@ function applyTask(data) {
                                 }
                                 //检测代理是否失效
                                 var closrAllFlag = 0;
+                                var startTime = Date.parse(new Date()) / 1000;
                                 timer = setInterval(function () {
                                     var timestrap = Date.parse(new Date()) / 1000;
                                     if (timestrap > task.proxy.ExpireTimeStramp && closrAllFlag == 0) {
                                         closeAllTabs(false);
                                         closrAllFlag = 1;
                                     }
-                                    var sub = timestrap - task.time;
+                                    var sub = startTime - task.time;
                                     if (timestrap > task.time && sub > task.seconds) {
                                         clearInterval(timer);
                                         closeAllTabs(true);
