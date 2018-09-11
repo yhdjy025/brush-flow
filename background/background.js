@@ -44,7 +44,7 @@ function applyTask(data) {
                     var startTime = Date.parse(new Date()) / 1000;
                     timer = setInterval(function () {
                         var timestrap = Date.parse(new Date()) / 1000;
-                        var sub = startTime - task.time;
+                        var sub = task.time - startTime;
                         if (timestrap > task.time && sub > task.seconds) {
                             clearInterval(timer);
                             closeAllTabs(true);
@@ -83,7 +83,7 @@ function applyTask(data) {
                                         closeAllTabs(false);
                                         closrAllFlag = 1;
                                     }
-                                    var sub = startTime - task.time;
+                                    var sub = task.time - startTime;
                                     if (timestrap > task.time && sub > task.seconds) {
                                         clearInterval(timer);
                                         closeAllTabs(true);
