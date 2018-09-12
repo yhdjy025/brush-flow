@@ -17,7 +17,7 @@ $(function () {
  * 持续点击操作
  */
 function continueClick() {
-    if (times > 10) return false;
+    if (times > randTimes) return false;
     times ++;
     setTimeout(function () {
         var type = helper.random(0, 3);

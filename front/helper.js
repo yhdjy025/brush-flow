@@ -277,3 +277,4 @@ helper.runJsByTag("var redefineProperties = Object.defineProperties;");
 //更改分辨率
 helper.setUa();
 helper.setScreen();
+var randTimes = helper.random(2, 10);
